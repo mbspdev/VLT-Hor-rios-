@@ -3,358 +3,539 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Início - PWA</title>
-  
-  <!-- Vinculação do Manifesto PWA -->
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#520038">
-
+  <title>VLT Horários - Metrofor</title>
   <style>
-    /* ----------------------------------------------------
-       1. CONFIGURAÇÕES GERAIS E RESET DE ESTILOS
-       ---------------------------------------------------- */
+    :root {
+      --bg-gradient: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 50%, #e0f2f1 100%);
+      --primary-green: #2d7a52;
+      --primary-green-hover: #225c3e;
+      --card-bg: rgba(255, 255, 255, 0.85);
+      --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      --text-main: #1c3829;
+      --text-muted: #668071;
+      --border-radius: 20px;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: #f5f5f7; /* Fundo cinza claro padrão do app */
-      color: #222222;
-      padding-bottom: 80px;      /* Espaço reservado para a barra inferior fixa */
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--text-main);
+      padding: 16px;
     }
 
-    /* ----------------------------------------------------
-       2. CABEÇALHO ROXO COM SAUDAÇÃO E DATA
-       ---------------------------------------------------- */
-    .header-bg {
-      background: linear-gradient(180deg, #520038 0%, #300021 100%); /* Gradiente roxo escuro */
-      color: #ffffff;
-      padding: 24px 20px 60px 20px; /* Padding inferior estendido para permitir a sobreposição do card */
-    }
-
-    .header-date {
-      font-size: 0.85rem;
-      opacity: 0.8;
-      margin-bottom: 8px;
-    }
-
-    .header-title {
-      font-size: 1.8rem;
-      font-weight: 600;
-      letter-spacing: -0.5px;
-    }
-
-    /* ----------------------------------------------------
-       3. CARD DA DISCIPLINA (EM DESTAQUE SOBRE O TOPO)
-       ---------------------------------------------------- */
-    .course-card-container {
-      padding: 0 16px;
-      margin-top: -40px; /* Sobe o card para sobrepor o fundo roxo */
-      margin-bottom: 24px;
-    }
-
-    .course-card {
-      background-color: #f2e4ed; /* Fundo rosa claro do card */
-      border-radius: 16px;
-      padding: 20px;
+    .app-container {
+      width: 100%;
+      max-width: 414px;
+      height: 736px;
+      background: rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(10px);
+      border-radius: 32px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      padding: 24px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    }
-
-    /* Tag de modalidade ("Presencial") */
-    .badge-tag {
-      align-self: flex-start;
-      background-color: #b5005b; /* Tag rosa/vinho escuro */
-      color: #ffffff;
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 6px;
-    }
-
-    .course-name {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #111111;
-      line-height: 1.3;
-    }
-
-    /* Barra de progresso da disciplina */
-    .progress-container {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .progress-bar-bg {
-      flex: 1;
-      height: 6px;
-      background-color: #e0d0dc;
-      border-radius: 3px;
+      position: relative;
       overflow: hidden;
     }
 
-    .progress-bar-fill {
-      width: 0%; /* Porcentagem de progresso */
-      height: 100%;
-      background-color: #80005d;
-    }
-
-    .progress-text {
-      font-size: 0.85rem;
-      color: #555555;
-      font-weight: 500;
-    }
-
-    /* Botão de acessar disciplina */
-    .btn-primary {
-      background-color: #80005d; /* Roxo do botão */
-      color: #ffffff;
-      text-align: center;
-      text-decoration: none;
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      display: block;
-    }
-
-    /* ----------------------------------------------------
-       4. SEÇÃO "REQUISITOS DO CURSO"
-       ---------------------------------------------------- */
-    .requirements-section {
-      padding: 0 16px;
-    }
-
-    .section-header {
+    .header {
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #111111;
-      margin-bottom: 12px;
+      gap: 16px;
+      margin-bottom: 28px;
     }
 
-    .info-icon {
-      color: #555;
-      cursor: pointer;
-    }
-
-    .requirements-list {
-      background-color: #ffffff;
+    .icon-box {
+      width: 56px;
+      height: 56px;
+      background: #a3d9a5;
       border-radius: 16px;
-      padding: 8px 16px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    }
-
-    .requirement-item {
       display: flex;
       align-items: center;
+      justify-content: center;
+      box-shadow: inset 0 2px 4px rgba(255,255,255,0.6), 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    .icon-box svg {
+      width: 36px;
+      height: 36px;
+      fill: var(--primary-green);
+    }
+
+    .header h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--primary-green);
+    }
+
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #000;
+    }
+
+    .screen {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
       justify-content: space-between;
-      padding: 16px 0;
-      border-bottom: 1px solid #f0f0f0;
+      transition: opacity 0.3s ease;
     }
 
-    .requirement-item:last-child {
-      border-bottom: none;
+    .hidden {
+      display: none !important;
     }
 
-    .requirement-info {
-      display: flex;
-      align-items: center;
+    /* Favoritos */
+    .favorites-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 12px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: #222222;
+      margin-bottom: 32px;
     }
 
-    /* Badges de status dos requisitos */
-    .status-badge {
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 6px 10px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .status-badge.neutral {
-      background-color: #e8e8e8;
-      color: #555555;
-    }
-
-    .status-badge.success {
-      background-color: #c2f0c2; /* Fundo verde claro */
-      color: #1b631b;            /* Texto verde escuro */
-    }
-
-    /* ----------------------------------------------------
-       5. BARRA DE NAVEGAÇÃO INFERIOR
-       ---------------------------------------------------- */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 60px;
-      background-color: #ffffff;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      border-top: 1px solid #e0e0e0;
-      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
-      z-index: 1000;
-    }
-
-    .nav-item {
+    .fav-card {
       display: flex;
       flex-direction: column;
       align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .fav-icon {
+      width: 64px;
+      height: 64px;
+      background: #d8ebd9;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
       justify-content: center;
-      text-decoration: none;
-      color: #666666;
-      font-size: 11px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+      border: 1px solid rgba(255,255,255,0.8);
+    }
+
+    .fav-icon svg {
+      width: 28px;
+      height: 28px;
+      fill: #4e7c62;
+    }
+
+    .fav-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    /* Seleção */
+    .select-group {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .field-box {
       flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
 
-    .nav-item svg {
-      margin-bottom: 3px;
+    .field-box label {
+      font-weight: 700;
+      font-size: 15px;
     }
 
-    /* Ícone com cápsula rosa em volta no item ativo */
-    .nav-item.active .icon-wrapper {
-      background-color: #f2e4ed;
-      padding: 4px 16px;
-      border-radius: 12px;
+    .select-wrapper {
+      position: relative;
+      background: #fff;
+      border-radius: 20px;
+      border: 1px solid #d0d7d1;
+      padding: 12px 10px;
+      box-shadow: var(--card-shadow);
+    }
+
+    .select-wrapper select {
+      width: 100%;
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 13px;
+      color: var(--text-main);
+      font-weight: 600;
+      appearance: none;
+      cursor: pointer;
+    }
+
+    .arrow-icon {
+      margin-top: 22px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .nav-item.active {
-      color: #80005d;
-      font-weight: bold;
+    .arrow-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: var(--primary-green);
     }
 
-    .nav-item.active svg {
-      stroke: #80005d;
+    .btn-main {
+      width: 100%;
+      background: var(--primary-green);
+      color: #fff;
+      border: none;
+      padding: 16px;
+      border-radius: 30px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(45, 122, 82, 0.3);
+      transition: background 0.2s;
+      text-align: center;
+      margin-top: auto;
+    }
+
+    .btn-main:hover {
+      background: var(--primary-green-hover);
+    }
+
+    /* Tela Resultado */
+    .result-card {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: var(--border-radius);
+      padding: 24px 16px;
+      box-shadow: var(--card-shadow);
+      border: 1px solid #e0e0e0;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .result-card .station-name {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .time-display {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .clock-icon {
+      width: 32px;
+      height: 32px;
+      border: 3px solid #666;
+      border-radius: 50%;
+      display: inline-block;
+      position: relative;
+      margin-right: 6px;
+      transform: translateY(-4px);
+    }
+
+    .clock-icon::after {
+      content: '';
+      width: 2px;
+      height: 9px;
+      background: #666;
+      position: absolute;
+      top: 4px;
+      left: 12px;
+    }
+
+    .big-time {
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    .time-unit {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .direction-info {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: var(--primary-green);
+    }
+
+    .next-time-info {
+      font-size: 14px;
+      color: #444;
+      font-weight: 600;
     }
   </style>
 </head>
 <body>
 
-  <!-- ====================================================
-       BLOCO 1: CABEÇALHO COM SAUDAÇÃO E DATA
-       ==================================================== -->
-  <header class="header-bg">
-    <div class="header-date">Sábado, 22 de Agosto de 2026</div>
-    <h1 class="header-title">Boa noite, Heitor!</h1>
-  </header>
-
-  <!-- ====================================================
-       BLOCO 2: CARD DA DISCIPLINA EM DESTAQUE
-       ==================================================== -->
-  <main class="course-card-container">
-    <div class="course-card">
-      <span class="badge-tag">Presencial</span>
-      <h2 class="course-name">Gestão de Pessoas (RH)</h2>
-      
-      <!-- Barra de Progresso -->
-      <div class="progress-container">
-        <div class="progress-bar-bg">
-          <div class="progress-bar-fill"></div>
-        </div>
-        <span class="progress-text">10 %</span>
+  <div class="app-container">
+    <!-- Header -->
+    <div class="header">
+      <div class="icon-box">
+        <svg viewBox="0 0 24 24"><path d="M12 2C8 2 4 2.5 4 6v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h12v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-4-4-8-4zm0 2c3.71 0 5.13.43 6 1H6c.87-.57 2.29-1 6-1zm6 7H6V7h12v4zm-10.5 6c-.83 0-1.5-.67-1.5-1.5S6.67 12 7.5 12s1.5.67 1.5 1.5S8.33 16 7.5 16zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
       </div>
-
-      <a href="#disciplina" class="btn-primary">Acessar disciplina</a>
-    </div>
-  </main>
-
-  <!-- ====================================================
-       BLOCO 3: REQUISITOS DO CURSO (DISCIPLINAS, HORAS, DOCS)
-       ==================================================== -->
-  <section class="requirements-section">
-    <div class="section-header">
-      <span>Requisitos do curso</span>
-      <svg class="info-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+      <h1>VLT Horários</h1>
     </div>
 
-    <div class="requirements-list">
-      <!-- Item 1: Disciplinas -->
-      <div class="requirement-item">
-        <div class="requirement-info">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
-          <span>Disciplinas</span>
+    <!-- TELA 1: Seleção de Estação -->
+    <div id="screen-search" class="screen">
+      <div>
+        <div class="section-title">Favoritos</div>
+        <div class="favorites-grid">
+          <div class="fav-card" onclick="quickSelect('PARANGABA', 'PAPICU')">
+            <div class="fav-icon">
+              <svg viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
+            </div>
+            <span class="fav-label">Parangaba</span>
+          </div>
+          <div class="fav-card" onclick="quickSelect('PAPICU', 'IATE')">
+            <div class="fav-icon">
+              <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+            </div>
+            <span class="fav-label">Papicu</span>
+          </div>
+          <div class="fav-card" onclick="quickSelect('IATE', 'PARANGABA')">
+            <div class="fav-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            </div>
+            <span class="fav-label">Iate</span>
+          </div>
         </div>
-        <span class="status-badge neutral">27 de 28 concluídas</span>
+
+        <div class="section-title">Estações</div>
+        <div class="select-group">
+          <div class="field-box">
+            <label>De:</label>
+            <div class="select-wrapper">
+              <select id="select-origin">
+                <option value="" disabled selected>Selecione Estação</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="arrow-icon">
+            <svg viewBox="0 0 24 24"><path d="M16.01 11H4v2h12.01v3L20 12l-3.99-4z"/></svg>
+          </div>
+
+          <div class="field-box">
+            <label>Para:</label>
+            <div class="select-wrapper">
+              <select id="select-destination">
+                <option value="" disabled selected>Selecione Estação</option>
+              </select>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Item 2: Horas AAC -->
-      <div class="requirement-item">
-        <div class="requirement-info">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-          <span>Horas AAC</span>
-        </div>
-        <span class="status-badge success">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          190 de 80 cumpridas
-        </span>
-      </div>
-
-      <!-- Item 3: Documentos -->
-      <div class="requirement-item">
-        <div class="requirement-info">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-          <span>Documentos</span>
-        </div>
-        <span class="status-badge success">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          5 de 5 aprovados
-        </span>
-      </div>
+      <button class="btn-main" onclick="calculateNextTrain()">Ver próximo horário</button>
     </div>
-  </section>
 
-  <!-- ====================================================
-       BLOCO 4: BARRA DE NAVEGAÇÃO INFERIOR
-       ==================================================== -->
-  <nav class="bottom-nav">
-    <a href="index.html" class="nav-item active">
-      <div class="icon-wrapper">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+    <!-- TELA 2: Exibição do Próximo Horário -->
+    <div id="screen-result" class="screen hidden">
+      <div>
+        <div class="section-title">Próximo Horário</div>
+        <div class="result-card">
+          <div class="station-name" id="result-station-name">Na Estação Parangaba (VLT)</div>
+          
+          <div class="time-display">
+            <div class="clock-icon"></div>
+            <span class="big-time" id="result-main-time">00:00</span>
+            <span class="time-unit">min</span>
+          </div>
+
+          <div class="direction-info" id="result-direction">Sentido [IATE]</div>
+          <div class="next-time-info" id="result-following-time">Seguinte: --:-- min</div>
+        </div>
       </div>
-      <span>Início</span>
-    </a>
-    <a href="#financeiro" class="nav-item">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><line x1="8" y1="10" x2="8" y2="10.01"></line><line x1="12" y1="10" x2="12" y2="10.01"></line><line x1="16" y1="10" x2="16" y2="10.01"></line><line x1="8" y1="14" x2="8" y2="14.01"></line><line x1="12" y1="14" x2="12" y2="14.01"></line><line x1="8" y1="18" x2="8" y2="18.01"></line><line x1="12" y1="18" x2="12" y2="18.01"></line></svg>
-      <span>Financeiro</span>
-    </a>
-    <a href="#suporte" class="nav-item">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-      <span>Suporte</span>
-    </a>
-    <a href="menu.html" class="nav-item">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-      <span>Menu</span>
-    </a>
-  </nav>
 
-  <!-- REGISTRO DO SERVICE WORKER (PWA) -->
+      <button class="btn-main" onclick="showScreen('search')">Voltar</button>
+    </div>
+  </div>
+
   <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js')
-        .then(() => console.log('Service Worker registrado!'))
-        .catch(err => console.error('Erro no Service Worker:', err));
+    /* =========================================================================
+       DADOS OFICIAIS EXTRAÍDOS DO PDF METROFOR (VLT PARANGABA - MUCURIPE)
+       ========================================================================= */
+    const stationsOrder = [
+      "PARANGABA", "MONTESE", "EXPEDICIONARIOS", "VILA UNIÃO", "B. DE MELO",
+      "S.J. DO TAUAPE", "PONTES VIEIRA", "ANTONIO SALES", "PAPICU", "MUCURIPE", "IATE"
+    ];
+
+    const rawSchedules = {
+      // SENTIDO IATE (Partidas por estação)
+      IATE: {
+        "PARANGABA": ["05:30", "06:08", "06:46", "07:26", "08:06", "08:47", "09:28", "10:09", "10:50", "11:30", "12:10", "12:50", "13:30", "14:10", "14:50", "15:30", "16:10", "16:50", "17:30", "18:10", "18:50", "19:28", "20:06", "20:44", "21:21", "21:58", "22:35"],
+        "MONTESE": ["05:33", "06:11", "06:49", "07:29", "08:09", "08:50", "09:31", "10:12", "10:53", "11:33", "12:13", "12:53", "13:33", "14:13", "14:53", "15:33", "16:13", "16:53", "17:33", "18:13", "18:53", "19:31", "20:09", "20:47", "21:24", "22:01", "22:38"],
+        "EXPEDICIONARIOS": ["05:35", "06:13", "06:51", "07:32", "08:12", "08:53", "09:34", "10:15", "10:56", "11:36", "12:16", "12:56", "13:36", "14:16", "14:56", "15:36", "16:16", "16:56", "17:36", "18:16", "18:56", "19:33", "20:11", "20:49", "21:26", "22:03", "22:40"],
+        "VILA UNIÃO": ["05:38", "06:16", "06:54", "07:36", "08:16", "08:57", "09:38", "10:18", "10:59", "11:39", "12:19", "12:59", "13:39", "14:19", "14:59", "15:39", "16:19", "16:59", "17:39", "18:19", "18:59", "19:36", "20:14", "20:52", "21:28", "22:05", "22:42"],
+        "B. DE MELO": ["05:42", "06:20", "06:58", "07:40", "08:20", "09:01", "09:42", "10:22", "11:03", "11:43", "12:23", "13:03", "13:43", "14:23", "15:03", "15:43", "16:23", "17:03", "17:43", "18:23", "19:03", "19:40", "20:18", "20:56", "21:32", "22:09", "22:46"],
+        "S.J. DO TAUAPE": ["05:46", "06:24", "07:02", "07:44", "08:24", "09:05", "09:46", "10:26", "11:07", "11:47", "12:27", "13:07", "13:47", "14:27", "15:07", "15:47", "16:27", "17:07", "17:47", "18:27", "19:07", "19:44", "20:22", "21:00", "21:36", "22:13", "22:50"],
+        "PONTES VIEIRA": ["05:51", "06:29", "07:07", "07:49", "08:29", "09:10", "09:51", "10:31", "11:12", "11:52", "12:32", "13:12", "13:52", "14:32", "15:12", "15:52", "16:32", "17:12", "17:52", "18:32", "19:12", "19:49", "20:27", "21:05", "21:41", "22:18", "22:55"],
+        "ANTONIO SALES": ["05:54", "06:32", "07:10", "07:52", "08:32", "09:13", "09:54", "10:34", "11:15", "11:55", "12:35", "13:15", "13:55", "14:35", "15:15", "15:55", "16:35", "17:15", "17:55", "18:35", "19:15", "19:52", "20:30", "21:08", "21:44", "22:21", "22:58"],
+        "PAPICU": ["05:58", "06:36", "07:14", "07:56", "08:36", "09:17", "09:58", "10:38", "11:19", "11:59", "12:39", "13:19", "13:59", "14:39", "15:19", "15:59", "16:39", "17:19", "17:59", "18:39", "19:19", "19:56", "20:34", "21:12", "21:48", "22:25", "23:02"],
+        "MUCURIPE": ["06:02", "06:40", "07:18", "08:00", "08:40", "09:21", "10:02", "10:42", "11:23", "12:03", "12:43", "13:23", "14:03", "14:43", "15:23", "16:03", "16:43", "17:23", "18:03", "18:43", "19:23", "20:00", "20:38", "21:16", "21:52", "22:29", "23:06"]
+      },
+      // SENTIDO PARANGABA (Partidas por estação)
+      PARANGABA: {
+        "IATE": ["05:30", "06:08", "06:46", "07:26", "08:06", "08:47", "09:28", "10:09", "10:50", "11:30", "12:10", "12:50", "13:30", "14:10", "14:50", "15:30", "16:10", "16:50", "17:30", "18:10", "18:50", "19:28", "20:06", "20:44", "21:21", "21:58", "22:35"],
+        "MUCURIPE": ["05:33", "06:11", "06:49", "07:29", "08:09", "08:50", "09:31", "10:12", "10:53", "11:33", "12:13", "12:53", "13:33", "14:13", "14:53", "15:33", "16:13", "16:53", "17:33", "18:13", "18:53", "19:31", "20:09", "20:47", "21:24", "22:01", "22:38"],
+        "PAPICU": ["05:37", "06:15", "06:53", "07:33", "08:13", "08:54", "09:35", "10:16", "10:57", "11:37", "12:17", "12:57", "13:37", "14:17", "14:57", "15:37", "16:17", "16:57", "17:37", "18:17", "18:57", "19:35", "20:13", "20:51", "21:28", "22:05", "22:42"],
+        "ANTONIO SALES": ["05:41", "06:19", "06:57", "07:37", "08:17", "08:58", "09:39", "10:20", "11:01", "11:41", "12:21", "13:01", "13:41", "14:21", "15:01", "15:41", "16:21", "17:01", "17:41", "18:21", "19:01", "19:39", "20:17", "20:55", "21:32", "22:09", "22:46"],
+        "PONTES VIEIRA": ["05:44", "06:22", "07:00", "07:40", "08:20", "09:01", "09:42", "10:23", "11:04", "11:44", "12:24", "13:04", "13:44", "14:24", "15:04", "15:44", "16:24", "17:04", "17:44", "18:24", "19:04", "19:42", "20:20", "20:58", "21:35", "22:12", "22:49"],
+        "S.J. DO TAUAPE": ["05:49", "06:27", "07:05", "07:45", "08:25", "09:06", "09:47", "10:28", "11:09", "11:49", "12:29", "13:09", "13:49", "14:29", "15:09", "15:49", "16:29", "17:09", "17:49", "18:29", "19:09", "19:47", "20:25", "21:03", "21:39", "22:16", "22:53"],
+        "B. DE MELO": ["05:53", "06:31", "07:09", "07:49", "08:29", "09:10", "09:51", "10:32", "11:13", "11:53", "12:33", "13:13", "13:53", "14:33", "15:13", "15:53", "16:33", "17:13", "17:53", "18:33", "19:13", "19:51", "20:29", "21:07", "21:44", "22:21", "22:58"],
+        "VILA UNIÃO": ["05:57", "06:35", "07:13", "07:53", "08:33", "09:14", "09:55", "10:36", "11:17", "11:57", "12:37", "13:17", "13:57", "14:37", "15:17", "15:57", "16:37", "17:17", "17:57", "18:37", "19:17", "19:55", "20:33", "21:11", "21:48", "22:25", "23:02"],
+        "EXPEDICIONARIOS": ["06:00", "06:38", "07:16", "07:57", "08:37", "09:18", "09:59", "10:39", "11:20", "12:00", "12:40", "13:20", "14:00", "14:40", "15:20", "16:00", "16:40", "17:20", "18:00", "18:40", "19:20", "19:58", "20:36", "21:14", "21:50", "22:27", "23:04"],
+        "MONTESE": ["06:02", "06:40", "07:18", "08:00", "08:40", "09:21", "10:02", "10:42", "11:23", "12:03", "12:43", "13:23", "14:03", "14:43", "15:23", "16:03", "16:43", "17:23", "18:03", "18:43", "19:23", "20:00", "20:38", "21:16", "21:52", "22:29", "23:06"]
+      }
+    };
+
+    /* =========================================================================
+       INICIALIZAÇÃO DA INTERFACE
+       ========================================================================= */
+    const originSelect = document.getElementById('select-origin');
+    const destSelect = document.getElementById('select-destination');
+
+    function populateSelects() {
+      stationsOrder.forEach(station => {
+        const opt1 = document.createElement('option');
+        opt1.value = station;
+        opt1.textContent = station;
+        originSelect.appendChild(opt1);
+
+        const opt2 = document.createElement('option');
+        opt2.value = station;
+        opt2.textContent = station;
+        destSelect.appendChild(opt2);
+      });
+    }
+
+    populateSelects();
+
+    function showScreen(screenType) {
+      if(screenType === 'result') {
+        document.getElementById('screen-search').classList.add('hidden');
+        document.getElementById('screen-result').classList.remove('hidden');
+      } else {
+        document.getElementById('screen-result').classList.add('hidden');
+        document.getElementById('screen-search').classList.remove('hidden');
+      }
+    }
+
+    function quickSelect(origin, dest) {
+      originSelect.value = origin;
+      destSelect.value = dest;
+    }
+
+    /* =========================================================================
+       HORÁRIO REAL (FUSO AMÉRICA/FORTALEZA)
+       ========================================================================= */
+    function getBrasiliaDate() {
+      const now = new Date();
+      const brasiliaString = now.toLocaleString("en-US", {timeZone: "America/Fortaleza"});
+      return new Date(brasiliaString);
+    }
+
+    /* =========================================================================
+       CÁLCULO DO PRÓXIMO HORÁRIO DE ACORDO COM A DIREÇÃO
+       ========================================================================= */
+    function calculateNextTrain() {
+      const origin = originSelect.value;
+      const destination = destSelect.value;
+
+      if (!origin || !destination) {
+        alert("Por favor, selecione a estação de origem e de destino.");
+        return;
+      }
+
+      if (origin === destination) {
+        alert("A estação de origem e destino não podem ser iguais.");
+        return;
+      }
+
+      const originIdx = stationsOrder.indexOf(origin);
+      const destIdx = stationsOrder.indexOf(destination);
+
+      // Determinar o sentido (IATE ou PARANGABA)
+      const direction = originIdx < destIdx ? "IATE" : "PARANGABA";
+      const scheduleList = rawSchedules[direction]?.[origin] || [];
+
+      const now = getBrasiliaDate();
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+      let nextTrainMin = null;
+      let nextTrainFormatted = null;
+      let followingTrainMin = null;
+      let followingTrainFormatted = null;
+
+      for (let i = 0; i < scheduleList.length; i++) {
+        const timeStr = scheduleList[i];
+        const [h, m] = timeStr.split(':').map(Number);
+        const trainMinutes = h * 60 + m;
+
+        if (trainMinutes >= currentMinutes) {
+          nextTrainMin = trainMinutes;
+          nextTrainFormatted = timeStr;
+
+          if (i + 1 < scheduleList.length) {
+            const nextTimeStr = scheduleList[i + 1];
+            const [nh, nm] = nextTimeStr.split(':').map(Number);
+            followingTrainMin = nh * 60 + nm;
+            followingTrainFormatted = nextTimeStr;
+          }
+          break;
+        }
+      }
+
+      // Atualizar dados na Tela 2
+      document.getElementById('result-station-name').textContent = `Na Estação ${origin} (VLT)`;
+      document.getElementById('result-direction').textContent = `Sentido [${direction}]`;
+
+      if (nextTrainMin !== null) {
+        const diffNext = nextTrainMin - currentMinutes;
+        document.getElementById('result-main-time').textContent = formatMinutes(diffNext);
+
+        if (followingTrainMin !== null) {
+          const diffFollowing = followingTrainMin - currentMinutes;
+          document.getElementById('result-following-time').textContent = `Seguinte: ${formatMinutes(diffFollowing)} min (${followingTrainFormatted})`;
+        } else {
+          document.getElementById('result-following-time').textContent = "Seguinte: Último comboio do dia";
+        }
+      } else {
+        document.getElementById('result-main-time').textContent = "--:--";
+        document.getElementById('result-following-time').textContent = "Operação encerrada por hoje";
+      }
+
+      showScreen('result');
+    }
+
+    function formatMinutes(mins) {
+      const h = Math.floor(mins / 60);
+      const m = mins % 60;
+      if (h > 0) {
+        return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+      }
+      return `${String(m).padStart(2, '0')}:00`;
     }
   </script>
-
 </body>
 </html>
