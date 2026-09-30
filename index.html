@@ -232,10 +232,10 @@
 
     .time-display {
       display: flex;
-      align-items: baseline;
+      align-items: center;
       justify-content: center;
-      gap: 6px;
-      margin-bottom: 16px;
+      gap: 10px;
+      margin-bottom: 8px;
     }
 
     .clock-icon {
@@ -245,8 +245,6 @@
       border-radius: 50%;
       display: inline-block;
       position: relative;
-      margin-right: 6px;
-      transform: translateY(-4px);
     }
 
     .clock-icon::after {
@@ -260,14 +258,16 @@
     }
 
     .big-time {
-      font-size: 42px;
+      font-size: 48px;
       font-weight: 800;
       letter-spacing: -1px;
     }
 
-    .time-unit {
-      font-size: 22px;
-      font-weight: 700;
+    .time-subtext {
+      font-size: 14px;
+      color: #666;
+      font-weight: 600;
+      margin-bottom: 20px;
     }
 
     .direction-info {
@@ -358,12 +358,12 @@
           
           <div class="time-display">
             <div class="clock-icon"></div>
-            <span class="big-time" id="result-main-time">00:00</span>
-            <span class="time-unit">min</span>
+            <span class="big-time" id="result-main-time">--:--</span>
           </div>
+          <div class="time-subtext" id="result-subtext">Partida em -- min</div>
 
           <div class="direction-info" id="result-direction">Sentido [IATE]</div>
-          <div class="next-time-info" id="result-following-time">Seguinte: --:-- min</div>
+          <div class="next-time-info" id="result-following-time">Seguinte: --:--</div>
         </div>
       </div>
 
@@ -381,7 +381,6 @@
     ];
 
     const rawSchedules = {
-      // SENTIDO IATE (Partidas por estação)
       IATE: {
         "PARANGABA": ["05:30", "06:08", "06:46", "07:26", "08:06", "08:47", "09:28", "10:09", "10:50", "11:30", "12:10", "12:50", "13:30", "14:10", "14:50", "15:30", "16:10", "16:50", "17:30", "18:10", "18:50", "19:28", "20:06", "20:44", "21:21", "21:58", "22:35"],
         "MONTESE": ["05:33", "06:11", "06:49", "07:29", "08:09", "08:50", "09:31", "10:12", "10:53", "11:33", "12:13", "12:53", "13:33", "14:13", "14:53", "15:33", "16:13", "16:53", "17:33", "18:13", "18:53", "19:31", "20:09", "20:47", "21:24", "22:01", "22:38"],
@@ -394,7 +393,6 @@
         "PAPICU": ["05:58", "06:36", "07:14", "07:56", "08:36", "09:17", "09:58", "10:38", "11:19", "11:59", "12:39", "13:19", "13:59", "14:39", "15:19", "15:59", "16:39", "17:19", "17:59", "18:39", "19:19", "19:56", "20:34", "21:12", "21:48", "22:25", "23:02"],
         "MUCURIPE": ["06:02", "06:40", "07:18", "08:00", "08:40", "09:21", "10:02", "10:42", "11:23", "12:03", "12:43", "13:23", "14:03", "14:43", "15:23", "16:03", "16:43", "17:23", "18:03", "18:43", "19:23", "20:00", "20:38", "21:16", "21:52", "22:29", "23:06"]
       },
-      // SENTIDO PARANGABA (Partidas por estação)
       PARANGABA: {
         "IATE": ["05:30", "06:08", "06:46", "07:26", "08:06", "08:47", "09:28", "10:09", "10:50", "11:30", "12:10", "12:50", "13:30", "14:10", "14:50", "15:30", "16:10", "16:50", "17:30", "18:10", "18:50", "19:28", "20:06", "20:44", "21:21", "21:58", "22:35"],
         "MUCURIPE": ["05:33", "06:11", "06:49", "07:29", "08:09", "08:50", "09:31", "10:12", "10:53", "11:33", "12:13", "12:53", "13:33", "14:13", "14:53", "15:33", "16:13", "16:53", "17:33", "18:13", "18:53", "19:31", "20:09", "20:47", "21:24", "22:01", "22:38"],
@@ -446,9 +444,6 @@
       destSelect.value = dest;
     }
 
-    /* =========================================================================
-       HORÁRIO REAL (FUSO AMÉRICA/FORTALEZA)
-       ========================================================================= */
     function getBrasiliaDate() {
       const now = new Date();
       const brasiliaString = now.toLocaleString("en-US", {timeZone: "America/Fortaleza"});
@@ -456,7 +451,7 @@
     }
 
     /* =========================================================================
-       CÁLCULO DO PRÓXIMO HORÁRIO DE ACORDO COM A DIREÇÃO
+       CÁLCULO EXIBINDO O HORÁRIO EXATO DE PARTIDA
        ========================================================================= */
     function calculateNextTrain() {
       const origin = originSelect.value;
@@ -475,16 +470,14 @@
       const originIdx = stationsOrder.indexOf(origin);
       const destIdx = stationsOrder.indexOf(destination);
 
-      // Determinar o sentido (IATE ou PARANGABA)
       const direction = originIdx < destIdx ? "IATE" : "PARANGABA";
       const scheduleList = rawSchedules[direction]?.[origin] || [];
 
       const now = getBrasiliaDate();
       const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
-      let nextTrainMin = null;
       let nextTrainFormatted = null;
-      let followingTrainMin = null;
+      let nextTrainMin = null;
       let followingTrainFormatted = null;
 
       for (let i = 0; i < scheduleList.length; i++) {
@@ -493,48 +486,44 @@
         const trainMinutes = h * 60 + m;
 
         if (trainMinutes >= currentMinutes) {
-          nextTrainMin = trainMinutes;
           nextTrainFormatted = timeStr;
+          nextTrainMin = trainMinutes;
 
           if (i + 1 < scheduleList.length) {
-            const nextTimeStr = scheduleList[i + 1];
-            const [nh, nm] = nextTimeStr.split(':').map(Number);
-            followingTrainMin = nh * 60 + nm;
-            followingTrainFormatted = nextTimeStr;
+            followingTrainFormatted = scheduleList[i + 1];
           }
           break;
         }
       }
 
-      // Atualizar dados na Tela 2
       document.getElementById('result-station-name').textContent = `Na Estação ${origin} (VLT)`;
       document.getElementById('result-direction').textContent = `Sentido [${direction}]`;
 
-      if (nextTrainMin !== null) {
+      if (nextTrainFormatted !== null) {
         const diffNext = nextTrainMin - currentMinutes;
-        document.getElementById('result-main-time').textContent = formatMinutes(diffNext);
 
-        if (followingTrainMin !== null) {
-          const diffFollowing = followingTrainMin - currentMinutes;
-          document.getElementById('result-following-time').textContent = `Seguinte: ${formatMinutes(diffFollowing)} min (${followingTrainFormatted})`;
+        // Mostra o horário exato em destaque principal
+        document.getElementById('result-main-time').textContent = nextTrainFormatted;
+
+        // Texto auxiliar com o tempo de espera restante
+        if (diffNext === 0) {
+          document.getElementById('result-subtext').textContent = "A passar agora na estação";
+        } else {
+          document.getElementById('result-subtext').textContent = `Partida em ${diffNext} min`;
+        }
+
+        if (followingTrainFormatted !== null) {
+          document.getElementById('result-following-time').textContent = `Seguinte: ${followingTrainFormatted}`;
         } else {
           document.getElementById('result-following-time').textContent = "Seguinte: Último comboio do dia";
         }
       } else {
         document.getElementById('result-main-time').textContent = "--:--";
+        document.getElementById('result-subtext').textContent = "Fora do horário de funcionamento";
         document.getElementById('result-following-time').textContent = "Operação encerrada por hoje";
       }
 
       showScreen('result');
-    }
-
-    function formatMinutes(mins) {
-      const h = Math.floor(mins / 60);
-      const m = mins % 60;
-      if (h > 0) {
-        return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
-      }
-      return `${String(m).padStart(2, '0')}:00`;
     }
   </script>
 </body>
