@@ -4,6 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>VLT Horários - Metrofor</title>
+
+  <!-- PWA & Mobile Settings -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2d7a52">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
   <style>
     :root {
       --bg-gradient: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 50%, #e0f2f1 100%);
@@ -256,7 +264,7 @@
       background: var(--primary-green-hover);
     }
 
-    /* Backdrop para desfoque no fundo */
+    /* Backdrop com desfoque pesado */
     .overlay-backdrop {
       position: absolute;
       top: 0;
@@ -490,7 +498,6 @@
     <!-- Dynamic Island Modal -->
     <div id="dynamic-island" class="dynamic-island-container">
       <div class="island-content">
-        <!-- Topo exibindo o SENTIDO diretamente -->
         <div class="island-pill-header">
           <svg viewBox="0 0 24 24"><path d="M12 2C8 2 4 2.5 4 6v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h12v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-4-4-8-4zm0 2c3.71 0 5.13.43 6 1H6c.87-.57 2.29-1 6-1zm6 7H6V7h12v4zm-10.5 6c-.83 0-1.5-.67-1.5-1.5S6.67 12 7.5 12s1.5.67 1.5 1.5S8.33 16 7.5 16zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
           <span id="island-direction">Sentido IATE</span>
@@ -512,7 +519,6 @@
 
         <div class="island-next-time-info" id="island-following-time">Seguinte: --:--</div>
 
-        <!-- Botão Voltar Integrado -->
         <button class="btn-island-back" onclick="closeIsland()">Voltar</button>
       </div>
     </div>
@@ -747,6 +753,17 @@
 
     populateSelects();
     renderRecents();
+  </script>
+
+  <!-- Script de Registo do PWA (Service Worker) -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then((reg) => console.log('Service Worker registrado com sucesso!', reg))
+          .catch((err) => console.error('Falha ao registrar Service Worker:', err));
+      });
+    }
   </script>
 </body>
 </html>
