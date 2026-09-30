@@ -256,7 +256,7 @@
       background: var(--primary-green-hover);
     }
 
-    /* Backdrop para ocultar e desfocar o fundo */
+    /* Backdrop para desfoque no fundo */
     .overlay-backdrop {
       position: absolute;
       top: 0;
@@ -306,7 +306,7 @@
       transform: translate(-50%, -50%) scale(1);
       width: calc(100% - 32px);
       height: auto;
-      min-height: 410px;
+      min-height: 380px;
       border-radius: 32px;
       opacity: 1;
       pointer-events: auto;
@@ -332,10 +332,11 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 12px;
-      font-weight: 700;
+      font-size: 13px;
+      font-weight: 800;
       color: #8ed69d;
       letter-spacing: 0.8px;
+      text-transform: uppercase;
     }
 
     .island-pill-header svg {
@@ -404,20 +405,12 @@
       color: #ffffff;
     }
 
-    .island-direction-info {
-      font-size: 16px;
-      font-weight: 800;
-      color: #8ed69d;
-      margin-bottom: 2px;
-    }
-
     .island-next-time-info {
       font-size: 13px;
-      color: rgba(255, 255, 255, 0.7);
-      font-weight: 500;
+      color: rgba(255, 255, 255, 0.75);
+      font-weight: 600;
     }
 
-    /* Botão Voltar interno do Modal */
     .btn-island-back {
       width: 100%;
       background: #2d7a52;
@@ -430,7 +423,7 @@
       cursor: pointer;
       box-shadow: 0 4px 12px rgba(0,0,0,0.25);
       transition: background 0.2s, transform 0.15s ease;
-      margin-top: 6px;
+      margin-top: 4px;
     }
 
     .btn-island-back:active {
@@ -442,7 +435,6 @@
 <body>
 
   <div class="app-container">
-    <!-- Backdrop com desfoque pesado (blur) -->
     <div id="backdrop" class="overlay-backdrop" onclick="closeIsland()"></div>
 
     <!-- Header -->
@@ -498,9 +490,10 @@
     <!-- Dynamic Island Modal -->
     <div id="dynamic-island" class="dynamic-island-container">
       <div class="island-content">
+        <!-- Topo exibindo o SENTIDO diretamente -->
         <div class="island-pill-header">
           <svg viewBox="0 0 24 24"><path d="M12 2C8 2 4 2.5 4 6v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h12v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-4-4-8-4zm0 2c3.71 0 5.13.43 6 1H6c.87-.57 2.29-1 6-1zm6 7H6V7h12v4zm-10.5 6c-.83 0-1.5-.67-1.5-1.5S6.67 12 7.5 12s1.5.67 1.5 1.5S8.33 16 7.5 16zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
-          <span>PRÓXIMO COMBOIO</span>
+          <span id="island-direction">Sentido IATE</span>
         </div>
 
         <div class="island-station-name" id="island-station-name">Na Estação Parangaba</div>
@@ -517,12 +510,9 @@
           <div class="island-arrival-text" id="island-arrival-time">Chegada às --:-- em DESTINO</div>
         </div>
 
-        <div>
-          <div class="island-direction-info" id="island-direction">Sentido IATE</div>
-          <div class="island-next-time-info" id="island-following-time">Seguinte: --:--</div>
-        </div>
+        <div class="island-next-time-info" id="island-following-time">Seguinte: --:--</div>
 
-        <!-- Botão Voltar Integrado na Janela Flutuante -->
+        <!-- Botão Voltar Integrado -->
         <button class="btn-island-back" onclick="closeIsland()">Voltar</button>
       </div>
     </div>
@@ -596,7 +586,7 @@
       ]
     };
 
-    const vltIconSvg = `<svg viewBox="0 0 24 24"><path d="M12 2C8 2 4 2.5 4 6v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h12v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-4-4-8-4zm0 2c3.71 0 5.13.43 6 1H6c.87-.57 2.29-1 6-1zm6 7H6V7h12v4zm-10.5 6c-.83 0-1.5-.67-1.5-1.5S6.67 12 7.5 12s1.5.67 1.5 1.5S8.33 16 7.5 16zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5-.67 1.5-1.5 1.5z"/></svg>`;
+    const vltIconSvg = `<svg viewBox="0 0 24 24"><path d="M12 2C8 2 4 2.5 4 6v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h12v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-4-4-8-4zm0 2c3.71 0 5.13.43 6 1H6c.87-.57 2.29-1 6-1zm6 7H6V7h12v4zm-10.5 6c-.83 0-1.5-.67-1.5-1.5S6.67 12 7.5 12s1.5.67 1.5 1.5S8.33 16 7.5 16zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>`;
 
     const defaultRecents = [
       { origin: "PARANGABA", dest: "PAPICU" },
@@ -744,7 +734,6 @@
         document.getElementById('island-following-time').textContent = "Operação encerrada por hoje";
       }
 
-      // Exibir Modal e Esconder Botão Flutuante Inferior
       document.getElementById('dynamic-island').classList.add('expanded');
       document.getElementById('backdrop').classList.add('active');
       actionFooter.classList.add('hidden');
