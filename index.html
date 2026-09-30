@@ -13,7 +13,7 @@
       --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
       --text-main: #1c3829;
       --text-muted: #668071;
-      --island-bg: #1c3829;
+      --island-bg: #1b3d2b;
       --island-text: #ffffff;
     }
 
@@ -228,6 +228,12 @@
       width: 100%;
       padding-top: 10px;
       z-index: 10;
+      transition: opacity 0.3s ease;
+    }
+
+    .action-footer.hidden {
+      opacity: 0;
+      pointer-events: none;
     }
 
     .btn-main {
@@ -250,6 +256,27 @@
       background: var(--primary-green-hover);
     }
 
+    /* Backdrop para ocultar e desfocar o fundo */
+    .overlay-backdrop {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(18, 35, 24, 0.65);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      z-index: 90;
+    }
+
+    .overlay-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
     /* Dynamic Island Card */
     .dynamic-island-container {
       position: absolute;
@@ -263,23 +290,24 @@
       opacity: 0;
       pointer-events: none;
       z-index: 100;
-      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+      transition: all 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.2);
+      box-shadow: 0 20px 45px rgba(0,0,0,0.35);
       color: var(--island-text);
-      padding: 22px 18px;
+      padding: 24px 20px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .dynamic-island-container.expanded {
       top: 50%;
-      transform: translate(-50%, -55%) scale(1);
+      transform: translate(-50%, -50%) scale(1);
       width: calc(100% - 32px);
       height: auto;
-      min-height: 370px;
-      border-radius: 28px;
+      min-height: 410px;
+      border-radius: 32px;
       opacity: 1;
       pointer-events: auto;
     }
@@ -293,6 +321,7 @@
       text-align: center;
       height: 100%;
       justify-content: space-between;
+      gap: 12px;
     }
 
     .dynamic-island-container.expanded .island-content {
@@ -305,22 +334,20 @@
       gap: 8px;
       font-size: 12px;
       font-weight: 700;
-      color: #a3d9a5;
-      letter-spacing: 0.5px;
-      margin-bottom: 8px;
+      color: #8ed69d;
+      letter-spacing: 0.8px;
     }
 
     .island-pill-header svg {
       width: 18px;
       height: 18px;
-      fill: #a3d9a5;
+      fill: #8ed69d;
     }
 
     .island-station-name {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 700;
       color: #ffffff;
-      margin-bottom: 12px;
     }
 
     .island-time-display {
@@ -332,9 +359,9 @@
     }
 
     .island-clock-icon {
-      width: 26px;
-      height: 26px;
-      border: 2px solid #a3d9a5;
+      width: 28px;
+      height: 28px;
+      border: 2px solid #8ed69d;
       border-radius: 50%;
       position: relative;
     }
@@ -342,15 +369,15 @@
     .island-clock-icon::after {
       content: '';
       width: 2px;
-      height: 7px;
-      background: #a3d9a5;
+      height: 8px;
+      background: #8ed69d;
       position: absolute;
       top: 4px;
-      left: 10px;
+      left: 11px;
     }
 
     .island-big-time {
-      font-size: 50px;
+      font-size: 54px;
       font-weight: 800;
       letter-spacing: -1px;
       color: #ffffff;
@@ -359,18 +386,16 @@
 
     .island-time-subtext {
       font-size: 13px;
-      color: #a3d9a5;
+      color: #8ed69d;
       font-weight: 600;
-      margin-bottom: 12px;
     }
 
     .island-arrival-box {
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 16px;
-      padding: 10px 16px;
+      border-radius: 18px;
+      padding: 12px 16px;
       width: 100%;
-      margin-bottom: 12px;
     }
 
     .island-arrival-text {
@@ -382,8 +407,8 @@
     .island-direction-info {
       font-size: 16px;
       font-weight: 800;
-      color: #a3d9a5;
-      margin-bottom: 4px;
+      color: #8ed69d;
+      margin-bottom: 2px;
     }
 
     .island-next-time-info {
@@ -392,30 +417,32 @@
       font-weight: 500;
     }
 
-    .overlay-backdrop {
-      position: absolute;
-      top: 0;
-      left: 0;
+    /* Botão Voltar interno do Modal */
+    .btn-island-back {
       width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s ease;
-      z-index: 90;
+      background: #2d7a52;
+      color: #ffffff;
+      border: none;
+      padding: 14px;
+      border-radius: 25px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      transition: background 0.2s, transform 0.15s ease;
+      margin-top: 6px;
     }
 
-    .overlay-backdrop.active {
-      opacity: 1;
-      pointer-events: auto;
+    .btn-island-back:active {
+      transform: scale(0.98);
+      background: #225c3e;
     }
   </style>
 </head>
 <body>
 
   <div class="app-container">
+    <!-- Backdrop com desfoque pesado (blur) -->
     <div id="backdrop" class="overlay-backdrop" onclick="closeIsland()"></div>
 
     <!-- Header -->
@@ -463,9 +490,9 @@
       </div>
     </div>
 
-    <!-- Botão Fixo -->
-    <div class="action-footer">
-      <button id="btn-action" class="btn-main" onclick="handleButtonClick()">Ver próximo horário</button>
+    <!-- Botão Fixo Principal -->
+    <div id="action-footer" class="action-footer">
+      <button class="btn-main" onclick="calculateAndOpenIsland()">Ver próximo horário</button>
     </div>
 
     <!-- Dynamic Island Modal -->
@@ -494,6 +521,9 @@
           <div class="island-direction-info" id="island-direction">Sentido IATE</div>
           <div class="island-next-time-info" id="island-following-time">Seguinte: --:--</div>
         </div>
+
+        <!-- Botão Voltar Integrado na Janela Flutuante -->
+        <button class="btn-island-back" onclick="closeIsland()">Voltar</button>
       </div>
     </div>
 
@@ -505,7 +535,6 @@
       "S.J. DO TAUAPE", "PONTES VIEIRA", "ANTONIO SALES", "PAPICU", "MUCURIPE", "IATE"
     ];
 
-    /* Tabela completa com índice de viagem alinhado para determinar a chegada */
     const fullSchedules = {
       IATE: [
         { "PARANGABA": "05:30", "MONTESE": "05:33", "EXPEDICIONARIOS": "05:35", "VILA UNIÃO": "05:38", "B. DE MELO": "05:42", "S.J. DO TAUAPE": "05:46", "PONTES VIEIRA": "05:51", "ANTONIO SALES": "05:54", "PAPICU": "05:58", "MUCURIPE": "06:02", "IATE": "06:05" },
@@ -567,7 +596,7 @@
       ]
     };
 
-    const vltIconSvg = `<svg viewBox="0 0 24 24"><path d="M12 2C8 2 4 2.5 4 6v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h12v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-4-4-8-4zm0 2c3.71 0 5.13.43 6 1H6c.87-.57 2.29-1 6-1zm6 7H6V7h12v4zm-10.5 6c-.83 0-1.5-.67-1.5-1.5S6.67 12 7.5 12s1.5.67 1.5 1.5S8.33 16 7.5 16zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>`;
+    const vltIconSvg = `<svg viewBox="0 0 24 24"><path d="M12 2C8 2 4 2.5 4 6v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h12v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-4-4-8-4zm0 2c3.71 0 5.13.43 6 1H6c.87-.57 2.29-1 6-1zm6 7H6V7h12v4zm-10.5 6c-.83 0-1.5-.67-1.5-1.5S6.67 12 7.5 12s1.5.67 1.5 1.5S8.33 16 7.5 16zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5-.67 1.5-1.5 1.5z"/></svg>`;
 
     const defaultRecents = [
       { origin: "PARANGABA", dest: "PAPICU" },
@@ -575,11 +604,9 @@
       { origin: "IATE", dest: "PARANGABA" }
     ];
 
-    let isIslandOpen = false;
-
     const originSelect = document.getElementById('select-origin');
     const destSelect = document.getElementById('select-destination');
-    const btnAction = document.getElementById('btn-action');
+    const actionFooter = document.getElementById('action-footer');
 
     function populateSelects() {
       stationsOrder.forEach(station => {
@@ -637,14 +664,6 @@
       const now = new Date();
       const brasiliaString = now.toLocaleString("en-US", {timeZone: "America/Fortaleza"});
       return new Date(brasiliaString);
-    }
-
-    function handleButtonClick() {
-      if (!isIslandOpen) {
-        calculateAndOpenIsland();
-      } else {
-        closeIsland();
-      }
     }
 
     function calculateAndOpenIsland() {
@@ -725,17 +744,16 @@
         document.getElementById('island-following-time').textContent = "Operação encerrada por hoje";
       }
 
+      // Exibir Modal e Esconder Botão Flutuante Inferior
       document.getElementById('dynamic-island').classList.add('expanded');
       document.getElementById('backdrop').classList.add('active');
-      btnAction.textContent = "Voltar";
-      isIslandOpen = true;
+      actionFooter.classList.add('hidden');
     }
 
     function closeIsland() {
       document.getElementById('dynamic-island').classList.remove('expanded');
       document.getElementById('backdrop').classList.remove('active');
-      btnAction.textContent = "Ver próximo horário";
-      isIslandOpen = false;
+      actionFooter.classList.remove('hidden');
     }
 
     populateSelects();
