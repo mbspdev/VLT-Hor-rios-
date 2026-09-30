@@ -43,7 +43,7 @@
       padding: 16px;
     }
 
-    /* Container com suporte fluido para Desktop e Mobile */
+    /* Container responsivo: Mobile + Desktop Centralizado */
     .app-container {
       width: 100%;
       max-width: 480px;
@@ -52,7 +52,7 @@
       background: rgba(255, 255, 255, 0.55);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      padding: 24px 24px 28px 24px;
+      padding: 24px;
       display: flex;
       flex-direction: column;
       position: relative;
@@ -63,7 +63,7 @@
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
     }
 
-    /* Ajustes para telas grandes (Desktop/Tablet) */
+    /* Layout responsivo para Desktop / Telas Maiores */
     @media (min-width: 768px) {
       .app-container {
         max-width: 680px;
@@ -269,11 +269,15 @@
       fill: var(--primary-green);
     }
 
-    /* Botão Fixo */
+    /* Botão Fixo e Rodapé */
     .action-footer {
       width: 100%;
       padding-top: 10px;
       z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
       transition: opacity 0.3s ease;
     }
 
@@ -305,7 +309,26 @@
       transform: scale(0.98);
     }
 
-    /* Backdrop com desfoque no fundo */
+    .credits-footer {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .credits-footer a {
+      color: var(--primary-green);
+      text-decoration: none;
+      font-weight: 700;
+      transition: opacity 0.2s ease;
+    }
+
+    .credits-footer a:hover {
+      text-decoration: underline;
+      opacity: 0.85;
+    }
+
+    /* Backdrop para desfoque no fundo */
     .overlay-backdrop {
       position: absolute;
       top: 0;
@@ -631,9 +654,12 @@
       </div>
     </div>
 
-    <!-- Botão Fixo Principal -->
+    <!-- Botão Fixo Principal e Rodapé com Link -->
     <div id="action-footer" class="action-footer">
       <button class="btn-main" onclick="calculateAndOpenIsland()">Ver próximo horário</button>
+      <footer class="credits-footer">
+        Criado por <a href="http://mariobruno.dev" target="_blank" rel="noopener noreferrer">Mario Bruno</a>
+      </footer>
     </div>
 
     <!-- Dynamic Island Modal -->
@@ -726,7 +752,7 @@
         { "IATE": "07:26", "MUCURIPE": "07:29", "PAPICU": "07:33", "ANTONIO SALES": "07:37", "PONTES VIEIRA": "07:40", "S.J. DO TAUAPE": "07:45", "B. DE MELO": "07:49", "VILA UNIÃO": "07:53", "EXPEDICIONARIOS": "07:57", "MONTESE": "08:00", "PARANGABA": "08:03" },
         { "IATE": "08:06", "MUCURIPE": "08:09", "PAPICU": "08:13", "ANTONIO SALES": "08:17", "PONTES VIEIRA": "08:20", "S.J. DO TAUAPE": "08:25", "B. DE MELO": "08:29", "VILA UNIÃO": "08:33", "EXPEDICIONARIOS": "08:37", "MONTESE": "08:40", "PARANGABA": "08:43" },
         { "IATE": "08:47", "MUCURIPE": "08:50", "PAPICU": "08:54", "ANTONIO SALES": "08:58", "PONTES VIEIRA": "09:01", "S.J. DO TAUAPE": "09:06", "B. DE MELO": "09:10", "VILA UNIÃO": "09:14", "EXPEDICIONARIOS": "09:18", "MONTESE": "09:21", "PARANGABA": "09:24" },
-        { "IATE": "09:28", "MUCURIPE": "09:31", "PAPICU": "09:35", "ANTONIO SALES": "09:39", "PONTES VIEIRA": "09:42", "S.J. DO TAUAPE": "09:47", "B. DE MELO": "09:51", "VILA UNIÃO": "09:55", "EXPEDICIONARIOS": "09:99", "MONTESE": "10:02", "PARANGABA": "10:05" },
+        { "IATE": "09:28", "MUCURIPE": "09:31", "PAPICU": "09:35", "ANTONIO SALES": "09:39", "PONTES VIEIRA": "09:42", "S.J. DO TAUAPE": "09:47", "B. DE MELO": "09:51", "VILA UNIÃO": "09:55", "EXPEDICIONARIOS": "09:59", "MONTESE": "10:02", "PARANGABA": "10:05" },
         { "IATE": "10:09", "MUCURIPE": "10:12", "PAPICU": "10:16", "ANTONIO SALES": "10:20", "PONTES VIEIRA": "10:23", "S.J. DO TAUAPE": "10:28", "B. DE MELO": "10:32", "VILA UNIÃO": "10:36", "EXPEDICIONARIOS": "10:39", "MONTESE": "10:42", "PARANGABA": "10:45" },
         { "IATE": "10:50", "MUCURIPE": "10:53", "PAPICU": "10:57", "ANTONIO SALES": "11:01", "PONTES VIEIRA": "11:04", "S.J. DO TAUAPE": "11:09", "B. DE MELO": "11:13", "VILA UNIÃO": "11:17", "EXPEDICIONARIOS": "11:20", "MONTESE": "11:23", "PARANGABA": "11:26" },
         { "IATE": "11:30", "MUCURIPE": "11:33", "PAPICU": "11:37", "ANTONIO SALES": "11:41", "PONTES VIEIRA": "11:44", "S.J. DO TAUAPE": "11:49", "B. DE MELO": "11:53", "VILA UNIÃO": "11:57", "EXPEDICIONARIOS": "12:00", "MONTESE": "12:03", "PARANGABA": "12:06" },
