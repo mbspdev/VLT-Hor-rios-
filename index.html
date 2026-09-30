@@ -264,7 +264,7 @@
       background: var(--primary-green-hover);
     }
 
-    /* Backdrop com desfoque pesado */
+    /* Backdrop para desfoque no fundo */
     .overlay-backdrop {
       position: absolute;
       top: 0;
@@ -438,6 +438,98 @@
       transform: scale(0.98);
       background: #225c3e;
     }
+
+    /* =========================================================================
+       POPUP DE INSTALAÇÃO DO PWA (BANNER)
+       ========================================================================= */
+    .pwa-install-banner {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      background: #1b3d2b;
+      color: #ffffff;
+      border-radius: 24px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      z-index: 80;
+      transform: translateY(150%);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .pwa-install-banner.show {
+      transform: translateY(0);
+    }
+
+    .pwa-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pwa-icon {
+      width: 40px;
+      height: 40px;
+      background: #2d7a52;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .pwa-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: #a3d9a5;
+    }
+
+    .pwa-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .pwa-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .pwa-sub {
+      font-size: 11px;
+      color: #a3d9a5;
+    }
+
+    .pwa-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-pwa-install {
+      background: #a3d9a5;
+      color: #1b3d2b;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 18px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-pwa-close {
+      background: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 16px;
+      cursor: pointer;
+      padding: 4px;
+    }
   </style>
 </head>
 <body>
@@ -520,6 +612,23 @@
         <div class="island-next-time-info" id="island-following-time">Seguinte: --:--</div>
 
         <button class="btn-island-back" onclick="closeIsland()">Voltar</button>
+      </div>
+    </div>
+
+    <!-- Popup Banner de Instalação do PWA -->
+    <div id="pwa-banner" class="pwa-install-banner">
+      <div class="pwa-info">
+        <div class="pwa-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8 2 4 2.5 4 6v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h12v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-4-4-8-4zm0 2c3.71 0 5.13.43 6 1H6c.87-.57 2.29-1 6-1zm6 7H6V7h12v4zm-10.5 6c-.83 0-1.5-.67-1.5-1.5S6.67 12 7.5 12s1.5.67 1.5 1.5S8.33 16 7.5 16zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+        </div>
+        <div class="pwa-text">
+          <span class="pwa-title">Instalar aplicativo</span>
+          <span class="pwa-sub">Acesso rápido offline</span>
+        </div>
+      </div>
+      <div class="pwa-actions">
+        <button class="btn-pwa-install" onclick="installPwa()">Instalar</button>
+        <button class="btn-pwa-close" onclick="dismissPwaBanner()">✕</button>
       </div>
     </div>
 
@@ -755,8 +864,47 @@
     renderRecents();
   </script>
 
-  <!-- Script de Registo do PWA (Service Worker) -->
+  <!-- Lógica de Instalação PWA Banner -->
   <script>
+    let deferredPrompt = null;
+    const pwaBanner = document.getElementById('pwa-banner');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      
+      // Exibe o banner apenas se o usuário ainda não tiver recusado anteriormente
+      if (!localStorage.getItem('pwa_dismissed')) {
+        setTimeout(() => {
+          pwaBanner.classList.add('show');
+        }, 1200);
+      }
+    });
+
+    function installPwa() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('Usuário aceitou a instalação do PWA');
+          }
+          deferredPrompt = null;
+          pwaBanner.classList.remove('show');
+        });
+      }
+    }
+
+    function dismissPwaBanner() {
+      pwaBanner.classList.remove('show');
+      localStorage.setItem('pwa_dismissed', 'true');
+    }
+
+    // Oculta se o app já estiver rodando instalado
+    window.addEventListener('appinstalled', () => {
+      pwaBanner.classList.remove('show');
+    });
+
+    // Registra Service Worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
