@@ -60,7 +60,7 @@
       }
     }
 
-    /* Topo / Dynamic Island Header */
+    /* Header */
     .header-wrapper {
       display: flex;
       flex-direction: column;
@@ -75,7 +75,6 @@
       align-items: center;
       gap: 12px;
       width: 100%;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .icon-box {
@@ -251,9 +250,7 @@
       background: var(--primary-green-hover);
     }
 
-    /* =========================================================================
-       DYNAMIC ISLAND ANIMATED CARD
-       ========================================================================= */
+    /* Dynamic Island Card */
     .dynamic-island-container {
       position: absolute;
       top: 16px;
@@ -269,7 +266,7 @@
       transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       box-shadow: 0 15px 35px rgba(0,0,0,0.25);
       color: var(--island-text);
-      padding: 20px 16px;
+      padding: 22px 18px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -281,7 +278,7 @@
       transform: translate(-50%, -55%) scale(1);
       width: calc(100% - 32px);
       height: auto;
-      min-height: 340px;
+      min-height: 370px;
       border-radius: 28px;
       opacity: 1;
       pointer-events: auto;
@@ -306,10 +303,11 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 12px;
+      font-weight: 700;
       color: #a3d9a5;
-      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
     }
 
     .island-pill-header svg {
@@ -319,10 +317,10 @@
     }
 
     .island-station-name {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
       color: #ffffff;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
 
     .island-time-display {
@@ -330,12 +328,12 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     .island-clock-icon {
-      width: 28px;
-      height: 28px;
+      width: 26px;
+      height: 26px;
       border: 2px solid #a3d9a5;
       border-radius: 50%;
       position: relative;
@@ -344,15 +342,15 @@
     .island-clock-icon::after {
       content: '';
       width: 2px;
-      height: 8px;
+      height: 7px;
       background: #a3d9a5;
       position: absolute;
       top: 4px;
-      left: 11px;
+      left: 10px;
     }
 
     .island-big-time {
-      font-size: 52px;
+      font-size: 50px;
       font-weight: 800;
       letter-spacing: -1px;
       color: #ffffff;
@@ -363,14 +361,29 @@
       font-size: 13px;
       color: #a3d9a5;
       font-weight: 600;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
+    }
+
+    .island-arrival-box {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      padding: 10px 16px;
+      width: 100%;
+      margin-bottom: 12px;
+    }
+
+    .island-arrival-text {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
     }
 
     .island-direction-info {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 800;
-      color: #ffffff;
-      margin-bottom: 6px;
+      color: #a3d9a5;
+      margin-bottom: 4px;
     }
 
     .island-next-time-info {
@@ -385,7 +398,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.25);
+      background: rgba(0, 0, 0, 0.3);
       backdrop-filter: blur(4px);
       -webkit-backdrop-filter: blur(4px);
       opacity: 0;
@@ -403,10 +416,9 @@
 <body>
 
   <div class="app-container">
-    <!-- Backdrop de Fundo para o efeito Ilha -->
     <div id="backdrop" class="overlay-backdrop" onclick="closeIsland()"></div>
 
-    <!-- Header Principal -->
+    <!-- Header -->
     <div class="header-wrapper">
       <div class="header">
         <div class="icon-box">
@@ -420,9 +432,7 @@
     <div class="main-content">
       <div>
         <div class="section-title">Trajetos recentes</div>
-        <div class="favorites-grid" id="recents-container">
-          <!-- Preenchido via JS -->
-        </div>
+        <div class="favorites-grid" id="recents-container"></div>
       </div>
 
       <div>
@@ -458,7 +468,7 @@
       <button id="btn-action" class="btn-main" onclick="handleButtonClick()">Ver próximo horário</button>
     </div>
 
-    <!-- Dynamic Island Result Modal -->
+    <!-- Dynamic Island Modal -->
     <div id="dynamic-island" class="dynamic-island-container">
       <div class="island-content">
         <div class="island-pill-header">
@@ -476,6 +486,10 @@
           <div class="island-time-subtext" id="island-subtext">Partida em -- min</div>
         </div>
 
+        <div class="island-arrival-box">
+          <div class="island-arrival-text" id="island-arrival-time">Chegada às --:-- em DESTINO</div>
+        </div>
+
         <div>
           <div class="island-direction-info" id="island-direction">Sentido IATE</div>
           <div class="island-next-time-info" id="island-following-time">Seguinte: --:--</div>
@@ -491,31 +505,66 @@
       "S.J. DO TAUAPE", "PONTES VIEIRA", "ANTONIO SALES", "PAPICU", "MUCURIPE", "IATE"
     ];
 
-    const rawSchedules = {
-      IATE: {
-        "PARANGABA": ["05:30", "06:08", "06:46", "07:26", "08:06", "08:47", "09:28", "10:09", "10:50", "11:30", "12:10", "12:50", "13:30", "14:10", "14:50", "15:30", "16:10", "16:50", "17:30", "18:10", "18:50", "19:28", "20:06", "20:44", "21:21", "21:58", "22:35"],
-        "MONTESE": ["05:33", "06:11", "06:49", "07:29", "08:09", "08:50", "09:31", "10:12", "10:53", "11:33", "12:13", "12:53", "13:33", "14:13", "14:53", "15:33", "16:13", "16:53", "17:33", "18:13", "18:53", "19:31", "20:09", "20:47", "21:24", "22:01", "22:38"],
-        "EXPEDICIONARIOS": ["05:35", "06:13", "06:51", "07:32", "08:12", "08:53", "09:34", "10:15", "10:56", "11:36", "12:16", "12:56", "13:36", "14:16", "14:56", "15:36", "16:16", "16:56", "17:36", "18:16", "18:56", "19:33", "20:11", "20:49", "21:26", "22:03", "22:40"],
-        "VILA UNIÃO": ["05:38", "06:16", "06:54", "07:36", "08:16", "08:57", "09:38", "10:18", "10:59", "11:39", "12:19", "12:59", "13:39", "14:19", "14:59", "15:39", "16:19", "16:59", "17:39", "18:19", "18:59", "19:36", "20:14", "20:52", "21:28", "22:05", "22:42"],
-        "B. DE MELO": ["05:42", "06:20", "06:58", "07:40", "08:20", "09:01", "09:42", "10:22", "11:03", "11:43", "12:23", "13:03", "13:43", "14:23", "15:03", "15:43", "16:23", "17:03", "17:43", "18:23", "19:03", "19:40", "20:18", "20:56", "21:32", "22:09", "22:46"],
-        "S.J. DO TAUAPE": ["05:46", "06:24", "07:02", "07:44", "08:24", "09:05", "09:46", "10:26", "11:07", "11:47", "12:27", "13:07", "13:47", "14:27", "15:07", "15:47", "16:27", "17:07", "17:47", "18:27", "19:07", "19:44", "20:22", "21:00", "21:36", "22:13", "22:50"],
-        "PONTES VIEIRA": ["05:51", "06:29", "07:07", "07:49", "08:29", "09:10", "09:51", "10:31", "11:12", "11:52", "12:32", "13:12", "13:52", "14:32", "15:12", "15:52", "16:32", "17:12", "17:52", "18:32", "19:12", "19:49", "20:27", "21:05", "21:41", "22:18", "22:55"],
-        "ANTONIO SALES": ["05:54", "06:32", "07:10", "07:52", "08:32", "09:13", "09:54", "10:34", "11:15", "11:55", "12:35", "13:15", "13:55", "14:35", "15:15", "15:55", "16:35", "17:15", "17:55", "18:35", "19:15", "19:52", "20:30", "21:08", "21:44", "22:21", "22:58"],
-        "PAPICU": ["05:58", "06:36", "07:14", "07:56", "08:36", "09:17", "09:58", "10:38", "11:19", "11:59", "12:39", "13:19", "13:59", "14:39", "15:19", "15:59", "16:39", "17:19", "17:59", "18:39", "19:19", "19:56", "20:34", "21:12", "21:48", "22:25", "23:02"],
-        "MUCURIPE": ["06:02", "06:40", "07:18", "08:00", "08:40", "09:21", "10:02", "10:42", "11:23", "12:03", "12:43", "13:23", "14:03", "14:43", "15:23", "16:03", "16:43", "17:23", "18:03", "18:43", "19:23", "20:00", "20:38", "21:16", "21:52", "22:29", "23:06"]
-      },
-      PARANGABA: {
-        "IATE": ["05:30", "06:08", "06:46", "07:26", "08:06", "08:47", "09:28", "10:09", "10:50", "11:30", "12:10", "12:50", "13:30", "14:10", "14:50", "15:30", "16:10", "16:50", "17:30", "18:10", "18:50", "19:28", "20:06", "20:44", "21:21", "21:58", "22:35"],
-        "MUCURIPE": ["05:33", "06:11", "06:49", "07:29", "08:09", "08:50", "09:31", "10:12", "10:53", "11:33", "12:13", "12:53", "13:33", "14:13", "14:53", "15:33", "16:13", "16:53", "17:33", "18:13", "18:53", "19:31", "20:09", "20:47", "21:24", "22:01", "22:38"],
-        "PAPICU": ["05:37", "06:15", "06:53", "07:33", "08:13", "08:54", "09:35", "10:16", "10:57", "11:37", "12:17", "12:57", "13:37", "14:17", "14:57", "15:37", "16:17", "16:57", "17:37", "18:17", "18:57", "19:35", "20:13", "20:51", "21:28", "22:05", "22:42"],
-        "ANTONIO SALES": ["05:41", "06:19", "06:57", "07:37", "08:17", "08:58", "09:39", "10:20", "11:01", "11:41", "12:21", "13:01", "13:41", "14:21", "15:01", "15:41", "16:21", "17:01", "17:41", "18:21", "19:01", "19:39", "20:17", "20:55", "21:32", "22:09", "22:46"],
-        "PONTES VIEIRA": ["05:44", "06:22", "07:00", "07:40", "08:20", "09:01", "09:42", "10:23", "11:04", "11:44", "12:24", "13:04", "13:44", "14:24", "15:04", "15:44", "16:24", "17:04", "17:44", "18:24", "19:04", "19:42", "20:20", "20:58", "21:35", "22:12", "22:49"],
-        "S.J. DO TAUAPE": ["05:49", "06:27", "07:05", "07:45", "08:25", "09:06", "09:47", "10:28", "11:09", "11:49", "12:29", "13:09", "13:49", "14:29", "15:09", "15:49", "16:29", "17:09", "17:49", "18:29", "19:09", "19:47", "20:25", "21:03", "21:39", "22:16", "22:53"],
-        "B. DE MELO": ["05:53", "06:31", "07:09", "07:49", "08:29", "09:10", "09:51", "10:32", "11:13", "11:53", "12:33", "13:13", "13:53", "14:33", "15:13", "15:53", "16:33", "17:13", "17:53", "18:33", "19:13", "19:51", "20:29", "21:07", "21:44", "22:21", "22:58"],
-        "VILA UNIÃO": ["05:57", "06:35", "07:13", "07:53", "08:33", "09:14", "09:55", "10:36", "11:17", "11:57", "12:37", "13:17", "13:57", "14:37", "15:17", "15:57", "16:37", "17:17", "17:57", "18:37", "19:17", "19:55", "20:33", "21:11", "21:48", "22:25", "23:02"],
-        "EXPEDICIONARIOS": ["06:00", "06:38", "07:16", "07:57", "08:37", "09:18", "09:59", "10:39", "11:20", "12:00", "12:40", "13:20", "14:00", "14:40", "15:20", "16:00", "16:40", "17:20", "18:00", "18:40", "19:20", "19:58", "20:36", "21:14", "21:50", "22:27", "23:04"],
-        "MONTESE": ["06:02", "06:40", "07:18", "08:00", "08:40", "09:21", "10:02", "10:42", "11:23", "12:03", "12:43", "13:23", "14:03", "14:43", "15:23", "16:03", "16:43", "17:23", "18:03", "18:43", "19:23", "20:00", "20:38", "21:16", "21:52", "22:29", "23:06"]
-      }
+    /* Tabela completa com índice de viagem alinhado para determinar a chegada */
+    const fullSchedules = {
+      IATE: [
+        { "PARANGABA": "05:30", "MONTESE": "05:33", "EXPEDICIONARIOS": "05:35", "VILA UNIÃO": "05:38", "B. DE MELO": "05:42", "S.J. DO TAUAPE": "05:46", "PONTES VIEIRA": "05:51", "ANTONIO SALES": "05:54", "PAPICU": "05:58", "MUCURIPE": "06:02", "IATE": "06:05" },
+        { "PARANGABA": "06:08", "MONTESE": "06:11", "EXPEDICIONARIOS": "06:13", "VILA UNIÃO": "06:16", "B. DE MELO": "06:20", "S.J. DO TAUAPE": "06:24", "PONTES VIEIRA": "06:29", "ANTONIO SALES": "06:32", "PAPICU": "06:36", "MUCURIPE": "06:40", "IATE": "06:43" },
+        { "PARANGABA": "06:46", "MONTESE": "06:49", "EXPEDICIONARIOS": "06:51", "VILA UNIÃO": "06:54", "B. DE MELO": "06:58", "S.J. DO TAUAPE": "07:02", "PONTES VIEIRA": "07:07", "ANTONIO SALES": "07:10", "PAPICU": "07:14", "MUCURIPE": "07:18", "IATE": "07:21" },
+        { "PARANGABA": "07:26", "MONTESE": "07:29", "EXPEDICIONARIOS": "07:32", "VILA UNIÃO": "07:36", "B. DE MELO": "07:40", "S.J. DO TAUAPE": "07:44", "PONTES VIEIRA": "07:49", "ANTONIO SALES": "07:52", "PAPICU": "07:56", "MUCURIPE": "08:00", "IATE": "08:03" },
+        { "PARANGABA": "08:06", "MONTESE": "08:09", "EXPEDICIONARIOS": "08:12", "VILA UNIÃO": "08:16", "B. DE MELO": "08:20", "S.J. DO TAUAPE": "08:24", "PONTES VIEIRA": "08:29", "ANTONIO SALES": "08:32", "PAPICU": "08:36", "MUCURIPE": "08:40", "IATE": "08:43" },
+        { "PARANGABA": "08:47", "MONTESE": "08:50", "EXPEDICIONARIOS": "08:53", "VILA UNIÃO": "08:57", "B. DE MELO": "09:01", "S.J. DO TAUAPE": "09:05", "PONTES VIEIRA": "09:10", "ANTONIO SALES": "09:13", "PAPICU": "09:17", "MUCURIPE": "09:21", "IATE": "09:24" },
+        { "PARANGABA": "09:28", "MONTESE": "09:31", "EXPEDICIONARIOS": "09:34", "VILA UNIÃO": "09:38", "B. DE MELO": "09:42", "S.J. DO TAUAPE": "09:46", "PONTES VIEIRA": "09:51", "ANTONIO SALES": "09:54", "PAPICU": "09:58", "MUCURIPE": "10:02", "IATE": "10:05" },
+        { "PARANGABA": "10:09", "MONTESE": "10:12", "EXPEDICIONARIOS": "10:15", "VILA UNIÃO": "10:18", "B. DE MELO": "10:22", "S.J. DO TAUAPE": "10:26", "PONTES VIEIRA": "10:31", "ANTONIO SALES": "10:34", "PAPICU": "10:38", "MUCURIPE": "10:42", "IATE": "10:45" },
+        { "PARANGABA": "10:50", "MONTESE": "10:53", "EXPEDICIONARIOS": "10:56", "VILA UNIÃO": "10:59", "B. DE MELO": "11:03", "S.J. DO TAUAPE": "11:07", "PONTES VIEIRA": "11:12", "ANTONIO SALES": "11:15", "PAPICU": "11:19", "MUCURIPE": "11:23", "IATE": "11:26" },
+        { "PARANGABA": "11:30", "MONTESE": "11:33", "EXPEDICIONARIOS": "11:36", "VILA UNIÃO": "11:39", "B. DE MELO": "11:43", "S.J. DO TAUAPE": "11:47", "PONTES VIEIRA": "11:52", "ANTONIO SALES": "11:55", "PAPICU": "11:59", "MUCURIPE": "12:03", "IATE": "12:06" },
+        { "PARANGABA": "12:10", "MONTESE": "12:13", "EXPEDICIONARIOS": "12:16", "VILA UNIÃO": "12:19", "B. DE MELO": "12:23", "S.J. DO TAUAPE": "12:27", "PONTES VIEIRA": "12:32", "ANTONIO SALES": "12:35", "PAPICU": "12:39", "MUCURIPE": "12:43", "IATE": "12:46" },
+        { "PARANGABA": "12:50", "MONTESE": "12:53", "EXPEDICIONARIOS": "12:56", "VILA UNIÃO": "12:59", "B. DE MELO": "13:03", "S.J. DO TAUAPE": "13:07", "PONTES VIEIRA": "13:12", "ANTONIO SALES": "13:15", "PAPICU": "13:19", "MUCURIPE": "13:23", "IATE": "13:26" },
+        { "PARANGABA": "13:30", "MONTESE": "13:33", "EXPEDICIONARIOS": "13:36", "VILA UNIÃO": "13:39", "B. DE MELO": "13:43", "S.J. DO TAUAPE": "13:47", "PONTES VIEIRA": "13:52", "ANTONIO SALES": "13:55", "PAPICU": "13:59", "MUCURIPE": "14:03", "IATE": "14:06" },
+        { "PARANGABA": "14:10", "MONTESE": "14:13", "EXPEDICIONARIOS": "14:16", "VILA UNIÃO": "14:19", "B. DE MELO": "14:23", "S.J. DO TAUAPE": "14:27", "PONTES VIEIRA": "14:32", "ANTONIO SALES": "14:35", "PAPICU": "14:39", "MUCURIPE": "14:43", "IATE": "14:46" },
+        { "PARANGABA": "14:50", "MONTESE": "14:53", "EXPEDICIONARIOS": "14:56", "VILA UNIÃO": "14:59", "B. DE MELO": "15:03", "S.J. DO TAUAPE": "15:07", "PONTES VIEIRA": "15:12", "ANTONIO SALES": "15:15", "PAPICU": "15:19", "MUCURIPE": "15:23", "IATE": "15:26" },
+        { "PARANGABA": "15:30", "MONTESE": "15:33", "EXPEDICIONARIOS": "15:36", "VILA UNIÃO": "15:39", "B. DE MELO": "15:43", "S.J. DO TAUAPE": "15:47", "PONTES VIEIRA": "15:52", "ANTONIO SALES": "15:55", "PAPICU": "15:59", "MUCURIPE": "16:03", "IATE": "16:06" },
+        { "PARANGABA": "16:10", "MONTESE": "16:13", "EXPEDICIONARIOS": "16:16", "VILA UNIÃO": "16:19", "B. DE MELO": "16:23", "S.J. DO TAUAPE": "16:27", "PONTES VIEIRA": "16:32", "ANTONIO SALES": "16:35", "PAPICU": "16:39", "MUCURIPE": "16:43", "IATE": "16:46" },
+        { "PARANGABA": "16:50", "MONTESE": "16:53", "EXPEDICIONARIOS": "16:56", "VILA UNIÃO": "16:59", "B. DE MELO": "17:03", "S.J. DO TAUAPE": "17:07", "PONTES VIEIRA": "17:12", "ANTONIO SALES": "17:15", "PAPICU": "17:19", "MUCURIPE": "17:23", "IATE": "17:26" },
+        { "PARANGABA": "17:30", "MONTESE": "17:33", "EXPEDICIONARIOS": "17:36", "VILA UNIÃO": "17:39", "B. DE MELO": "17:43", "S.J. DO TAUAPE": "17:47", "PONTES VIEIRA": "17:52", "ANTONIO SALES": "17:55", "PAPICU": "17:59", "MUCURIPE": "18:03", "IATE": "18:06" },
+        { "PARANGABA": "18:10", "MONTESE": "18:13", "EXPEDICIONARIOS": "18:16", "VILA UNIÃO": "18:19", "B. DE MELO": "18:23", "S.J. DO TAUAPE": "18:27", "PONTES VIEIRA": "18:32", "ANTONIO SALES": "18:35", "PAPICU": "18:39", "MUCURIPE": "18:43", "IATE": "18:46" },
+        { "PARANGABA": "18:50", "MONTESE": "18:53", "EXPEDICIONARIOS": "18:56", "VILA UNIÃO": "18:59", "B. DE MELO": "19:03", "S.J. DO TAUAPE": "19:07", "PONTES VIEIRA": "19:12", "ANTONIO SALES": "19:15", "PAPICU": "19:19", "MUCURIPE": "19:23", "IATE": "19:26" },
+        { "PARANGABA": "19:28", "MONTESE": "19:31", "EXPEDICIONARIOS": "19:33", "VILA UNIÃO": "19:36", "B. DE MELO": "19:40", "S.J. DO TAUAPE": "19:44", "PONTES VIEIRA": "19:49", "ANTONIO SALES": "19:52", "PAPICU": "19:56", "MUCURIPE": "20:00", "IATE": "20:03" },
+        { "PARANGABA": "20:06", "MONTESE": "20:09", "EXPEDICIONARIOS": "20:11", "VILA UNIÃO": "20:14", "B. DE MELO": "20:18", "S.J. DO TAUAPE": "20:22", "PONTES VIEIRA": "20:27", "ANTONIO SALES": "20:30", "PAPICU": "20:34", "MUCURIPE": "20:38", "IATE": "20:41" },
+        { "PARANGABA": "20:44", "MONTESE": "20:47", "EXPEDICIONARIOS": "20:49", "VILA UNIÃO": "20:52", "B. DE MELO": "20:56", "S.J. DO TAUAPE": "21:00", "PONTES VIEIRA": "21:05", "ANTONIO SALES": "21:08", "PAPICU": "21:12", "MUCURIPE": "21:16", "IATE": "21:19" },
+        { "PARANGABA": "21:21", "MONTESE": "21:24", "EXPEDICIONARIOS": "21:26", "VILA UNIÃO": "21:28", "B. DE MELO": "21:32", "S.J. DO TAUAPE": "21:36", "PONTES VIEIRA": "21:41", "ANTONIO SALES": "21:44", "PAPICU": "21:48", "MUCURIPE": "21:52", "IATE": "21:55" },
+        { "PARANGABA": "21:58", "MONTESE": "22:01", "EXPEDICIONARIOS": "22:03", "VILA UNIÃO": "22:05", "B. DE MELO": "22:09", "S.J. DO TAUAPE": "22:13", "PONTES VIEIRA": "22:18", "ANTONIO SALES": "22:21", "PAPICU": "22:25", "MUCURIPE": "22:29", "IATE": "22:32" },
+        { "PARANGABA": "22:35", "MONTESE": "22:38", "EXPEDICIONARIOS": "22:40", "VILA UNIÃO": "22:42", "B. DE MELO": "22:46", "S.J. DO TAUAPE": "22:50", "PONTES VIEIRA": "22:55", "ANTONIO SALES": "22:58", "PAPICU": "23:02", "MUCURIPE": "23:06", "IATE": "23:09" }
+      ],
+      PARANGABA: [
+        { "IATE": "05:30", "MUCURIPE": "05:33", "PAPICU": "05:37", "ANTONIO SALES": "05:41", "PONTES VIEIRA": "05:44", "S.J. DO TAUAPE": "05:49", "B. DE MELO": "05:53", "VILA UNIÃO": "05:57", "EXPEDICIONARIOS": "06:00", "MONTESE": "06:02", "PARANGABA": "06:05" },
+        { "IATE": "06:08", "MUCURIPE": "06:11", "PAPICU": "06:15", "ANTONIO SALES": "06:19", "PONTES VIEIRA": "06:22", "S.J. DO TAUAPE": "06:27", "B. DE MELO": "06:31", "VILA UNIÃO": "06:35", "EXPEDICIONARIOS": "06:38", "MONTESE": "06:40", "PARANGABA": "06:43" },
+        { "IATE": "06:46", "MUCURIPE": "06:49", "PAPICU": "06:53", "ANTONIO SALES": "06:57", "PONTES VIEIRA": "07:00", "S.J. DO TAUAPE": "07:05", "B. DE MELO": "07:09", "VILA UNIÃO": "07:13", "EXPEDICIONARIOS": "07:16", "MONTESE": "07:18", "PARANGABA": "07:21" },
+        { "IATE": "07:26", "MUCURIPE": "07:29", "PAPICU": "07:33", "ANTONIO SALES": "07:37", "PONTES VIEIRA": "07:40", "S.J. DO TAUAPE": "07:45", "B. DE MELO": "07:49", "VILA UNIÃO": "07:53", "EXPEDICIONARIOS": "07:57", "MONTESE": "08:00", "PARANGABA": "08:03" },
+        { "IATE": "08:06", "MUCURIPE": "08:09", "PAPICU": "08:13", "ANTONIO SALES": "08:17", "PONTES VIEIRA": "08:20", "S.J. DO TAUAPE": "08:25", "B. DE MELO": "08:29", "VILA UNIÃO": "08:33", "EXPEDICIONARIOS": "08:37", "MONTESE": "08:40", "PARANGABA": "08:43" },
+        { "IATE": "08:47", "MUCURIPE": "08:50", "PAPICU": "08:54", "ANTONIO SALES": "08:58", "PONTES VIEIRA": "09:01", "S.J. DO TAUAPE": "09:06", "B. DE MELO": "09:10", "VILA UNIÃO": "09:14", "EXPEDICIONARIOS": "09:18", "MONTESE": "09:21", "PARANGABA": "09:24" },
+        { "IATE": "09:28", "MUCURIPE": "09:31", "PAPICU": "09:35", "ANTONIO SALES": "09:39", "PONTES VIEIRA": "09:42", "S.J. DO TAUAPE": "09:47", "B. DE MELO": "09:51", "VILA UNIÃO": "09:55", "EXPEDICIONARIOS": "09:59", "MONTESE": "10:02", "PARANGABA": "10:05" },
+        { "IATE": "10:09", "MUCURIPE": "10:12", "PAPICU": "10:16", "ANTONIO SALES": "10:20", "PONTES VIEIRA": "10:23", "S.J. DO TAUAPE": "10:28", "B. DE MELO": "10:32", "VILA UNIÃO": "10:36", "EXPEDICIONARIOS": "10:39", "MONTESE": "10:42", "PARANGABA": "10:45" },
+        { "IATE": "10:50", "MUCURIPE": "10:53", "PAPICU": "10:57", "ANTONIO SALES": "11:01", "PONTES VIEIRA": "11:04", "S.J. DO TAUAPE": "11:09", "B. DE MELO": "11:13", "VILA UNIÃO": "11:17", "EXPEDICIONARIOS": "11:20", "MONTESE": "11:23", "PARANGABA": "11:26" },
+        { "IATE": "11:30", "MUCURIPE": "11:33", "PAPICU": "11:37", "ANTONIO SALES": "11:41", "PONTES VIEIRA": "11:44", "S.J. DO TAUAPE": "11:49", "B. DE MELO": "11:53", "VILA UNIÃO": "11:57", "EXPEDICIONARIOS": "12:00", "MONTESE": "12:03", "PARANGABA": "12:06" },
+        { "IATE": "12:10", "MUCURIPE": "12:13", "PAPICU": "12:17", "ANTONIO SALES": "12:21", "PONTES VIEIRA": "12:24", "S.J. DO TAUAPE": "12:29", "B. DE MELO": "12:33", "VILA UNIÃO": "12:37", "EXPEDICIONARIOS": "12:40", "MONTESE": "12:43", "PARANGABA": "12:46" },
+        { "IATE": "12:50", "MUCURIPE": "12:53", "PAPICU": "12:57", "ANTONIO SALES": "13:01", "PONTES VIEIRA": "13:04", "S.J. DO TAUAPE": "13:09", "B. DE MELO": "13:13", "VILA UNIÃO": "13:17", "EXPEDICIONARIOS": "13:20", "MONTESE": "13:23", "PARANGABA": "13:26" },
+        { "IATE": "13:30", "MUCURIPE": "13:33", "PAPICU": "13:37", "ANTONIO SALES": "13:41", "PONTES VIEIRA": "13:44", "S.J. DO TAUAPE": "13:49", "B. DE MELO": "13:53", "VILA UNIÃO": "13:57", "EXPEDICIONARIOS": "14:00", "MONTESE": "14:03", "PARANGABA": "14:06" },
+        { "IATE": "14:10", "MUCURIPE": "14:13", "PAPICU": "14:17", "ANTONIO SALES": "14:21", "PONTES VIEIRA": "14:24", "S.J. DO TAUAPE": "14:29", "B. DE MELO": "14:33", "VILA UNIÃO": "14:37", "EXPEDICIONARIOS": "14:40", "MONTESE": "14:43", "PARANGABA": "14:46" },
+        { "IATE": "14:50", "MUCURIPE": "14:53", "PAPICU": "14:57", "ANTONIO SALES": "15:01", "PONTES VIEIRA": "15:04", "S.J. DO TAUAPE": "15:09", "B. DE MELO": "15:13", "VILA UNIÃO": "15:17", "EXPEDICIONARIOS": "15:20", "MONTESE": "15:23", "PARANGABA": "15:26" },
+        { "IATE": "15:30", "MUCURIPE": "15:33", "PAPICU": "15:37", "ANTONIO SALES": "15:41", "PONTES VIEIRA": "15:44", "S.J. DO TAUAPE": "15:49", "B. DE MELO": "15:53", "VILA UNIÃO": "15:57", "EXPEDICIONARIOS": "16:00", "MONTESE": "16:03", "PARANGABA": "16:06" },
+        { "IATE": "16:10", "MUCURIPE": "16:13", "PAPICU": "16:17", "ANTONIO SALES": "16:21", "PONTES VIEIRA": "16:24", "S.J. DO TAUAPE": "16:29", "B. DE MELO": "16:33", "VILA UNIÃO": "16:37", "EXPEDICIONARIOS": "16:40", "MONTESE": "16:43", "PARANGABA": "16:46" },
+        { "IATE": "16:50", "MUCURIPE": "16:53", "PAPICU": "16:57", "ANTONIO SALES": "17:01", "PONTES VIEIRA": "17:04", "S.J. DO TAUAPE": "17:09", "B. DE MELO": "17:13", "VILA UNIÃO": "17:17", "EXPEDICIONARIOS": "17:20", "MONTESE": "17:23", "PARANGABA": "17:26" },
+        { "IATE": "17:30", "MUCURIPE": "17:33", "PAPICU": "17:37", "ANTONIO SALES": "17:41", "PONTES VIEIRA": "17:44", "S.J. DO TAUAPE": "17:49", "B. DE MELO": "17:53", "VILA UNIÃO": "17:57", "EXPEDICIONARIOS": "18:00", "MONTESE": "18:03", "PARANGABA": "18:06" },
+        { "IATE": "18:10", "MUCURIPE": "18:13", "PAPICU": "18:17", "ANTONIO SALES": "18:21", "PONTES VIEIRA": "18:24", "S.J. DO TAUAPE": "18:29", "B. DE MELO": "18:33", "VILA UNIÃO": "18:37", "EXPEDICIONARIOS": "18:40", "MONTESE": "18:43", "PARANGABA": "18:46" },
+        { "IATE": "18:50", "MUCURIPE": "18:53", "PAPICU": "18:57", "ANTONIO SALES": "19:01", "PONTES VIEIRA": "19:04", "S.J. DO TAUAPE": "19:09", "B. DE MELO": "19:13", "VILA UNIÃO": "19:17", "EXPEDICIONARIOS": "19:20", "MONTESE": "19:23", "PARANGABA": "19:26" },
+        { "IATE": "19:28", "MUCURIPE": "19:31", "PAPICU": "19:35", "ANTONIO SALES": "19:39", "PONTES VIEIRA": "19:42", "S.J. DO TAUAPE": "19:47", "B. DE MELO": "19:51", "VILA UNIÃO": "19:55", "EXPEDICIONARIOS": "19:58", "MONTESE": "20:00", "PARANGABA": "20:03" },
+        { "IATE": "20:06", "MUCURIPE": "20:09", "PAPICU": "20:13", "ANTONIO SALES": "20:17", "PONTES VIEIRA": "20:20", "S.J. DO TAUAPE": "20:25", "B. DE MELO": "20:29", "VILA UNIÃO": "20:33", "EXPEDICIONARIOS": "20:36", "MONTESE": "20:38", "PARANGABA": "20:41" },
+        { "IATE": "20:44", "MUCURIPE": "20:47", "PAPICU": "20:51", "ANTONIO SALES": "20:55", "PONTES VIEIRA": "20:58", "S.J. DO TAUAPE": "21:03", "B. DE MELO": "21:07", "VILA UNIÃO": "21:11", "EXPEDICIONARIOS": "21:14", "MONTESE": "21:16", "PARANGABA": "21:19" },
+        { "IATE": "21:21", "MUCURIPE": "21:24", "PAPICU": "21:28", "ANTONIO SALES": "21:32", "PONTES VIEIRA": "21:35", "S.J. DO TAUAPE": "21:39", "B. DE MELO": "21:44", "VILA UNIÃO": "21:48", "EXPEDICIONARIOS": "21:50", "MONTESE": "21:52", "PARANGABA": "21:55" },
+        { "IATE": "21:58", "MUCURIPE": "22:01", "PAPICU": "22:05", "ANTONIO SALES": "22:09", "PONTES VIEIRA": "22:12", "S.J. DO TAUAPE": "22:16", "B. DE MELO": "22:21", "VILA UNIÃO": "22:25", "EXPEDICIONARIOS": "22:27", "MONTESE": "22:29", "PARANGABA": "22:32" },
+        { "IATE": "22:35", "MUCURIPE": "22:38", "PAPICU": "22:42", "ANTONIO SALES": "22:46", "PONTES VIEIRA": "22:49", "S.J. DO TAUAPE": "22:53", "B. DE MELO": "22:58", "VILA UNIÃO": "23:02", "EXPEDICIONARIOS": "23:04", "MONTESE": "23:06", "PARANGABA": "23:09" }
+      ]
     };
 
     const vltIconSvg = `<svg viewBox="0 0 24 24"><path d="M12 2C8 2 4 2.5 4 6v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h12v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-4-4-8-4zm0 2c3.71 0 5.13.43 6 1H6c.87-.57 2.29-1 6-1zm6 7H6V7h12v4zm-10.5 6c-.83 0-1.5-.67-1.5-1.5S6.67 12 7.5 12s1.5.67 1.5 1.5S8.33 16 7.5 16zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>`;
@@ -618,26 +667,32 @@
       const destIdx = stationsOrder.indexOf(destination);
 
       const direction = originIdx < destIdx ? "IATE" : "PARANGABA";
-      const scheduleList = rawSchedules[direction]?.[origin] || [];
+      const trips = fullSchedules[direction];
 
       const now = getBrasiliaDate();
       const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
       let nextTrainFormatted = null;
       let nextTrainMin = null;
+      let arrivalTimeFormatted = null;
       let followingTrainFormatted = null;
 
-      for (let i = 0; i < scheduleList.length; i++) {
-        const timeStr = scheduleList[i];
-        const [h, m] = timeStr.split(':').map(Number);
+      for (let i = 0; i < trips.length; i++) {
+        const trip = trips[i];
+        const departureStr = trip[origin];
+        
+        if (!departureStr) continue;
+
+        const [h, m] = departureStr.split(':').map(Number);
         const trainMinutes = h * 60 + m;
 
         if (trainMinutes >= currentMinutes) {
-          nextTrainFormatted = timeStr;
+          nextTrainFormatted = departureStr;
           nextTrainMin = trainMinutes;
+          arrivalTimeFormatted = trip[destination];
 
-          if (i + 1 < scheduleList.length) {
-            followingTrainFormatted = scheduleList[i + 1];
+          if (i + 1 < trips.length) {
+            followingTrainFormatted = trips[i + 1][origin];
           }
           break;
         }
@@ -656,7 +711,9 @@
           document.getElementById('island-subtext').textContent = `Partida em ${diffNext} min`;
         }
 
-        if (followingTrainFormatted !== null) {
+        document.getElementById('island-arrival-time').textContent = `Chegada às ${arrivalTimeFormatted} em ${destination}`;
+
+        if (followingTrainFormatted) {
           document.getElementById('island-following-time').textContent = `Seguinte: ${followingTrainFormatted}`;
         } else {
           document.getElementById('island-following-time').textContent = "Seguinte: Último comboio do dia";
@@ -664,10 +721,10 @@
       } else {
         document.getElementById('island-main-time').textContent = "--:--";
         document.getElementById('island-subtext').textContent = "Fora de operação";
+        document.getElementById('island-arrival-time').textContent = "Sem viagens disponíveis hoje";
         document.getElementById('island-following-time').textContent = "Operação encerrada por hoje";
       }
 
-      // Animar Ilha Dinâmica
       document.getElementById('dynamic-island').classList.add('expanded');
       document.getElementById('backdrop').classList.add('active');
       btnAction.textContent = "Voltar";
