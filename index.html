@@ -2,18 +2,19 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>VLT Horários - Metrofor</title>
   <style>
     :root {
       --bg-gradient: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 50%, #e0f2f1 100%);
       --primary-green: #2d7a52;
       --primary-green-hover: #225c3e;
-      --card-bg: rgba(255, 255, 255, 0.85);
-      --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      --card-bg: rgba(255, 255, 255, 0.9);
+      --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
       --text-main: #1c3829;
       --text-muted: #668071;
-      --border-radius: 20px;
+      --island-bg: #1c3829;
+      --island-text: #ffffff;
     }
 
     * {
@@ -21,114 +22,139 @@
       margin: 0;
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
       background: var(--bg-gradient);
-      min-height: 100vh;
+      height: 100dvh;
       display: flex;
       justify-content: center;
       align-items: center;
       color: var(--text-main);
-      padding: 16px;
+      overflow: hidden;
     }
 
     .app-container {
       width: 100%;
       max-width: 414px;
-      height: 736px;
-      background: rgba(255, 255, 255, 0.4);
-      backdrop-filter: blur(10px);
-      border-radius: 32px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-      border: 1px solid rgba(255, 255, 255, 0.6);
-      padding: 24px;
+      height: 100dvh;
+      max-height: 896px;
+      background: rgba(255, 255, 255, 0.45);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 20px 20px 24px 20px;
       display: flex;
       flex-direction: column;
       position: relative;
       overflow: hidden;
+      justify-content: space-between;
+    }
+
+    @media (min-height: 700px) {
+      .app-container {
+        height: 92dvh;
+        border-radius: 36px;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+      }
+    }
+
+    /* Topo / Dynamic Island Header */
+    .header-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 10;
+      margin-bottom: 12px;
     }
 
     .header {
       display: flex;
       align-items: center;
-      gap: 16px;
-      margin-bottom: 28px;
+      gap: 12px;
+      width: 100%;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .icon-box {
-      width: 56px;
-      height: 56px;
+      width: 48px;
+      height: 48px;
       background: #a3d9a5;
-      border-radius: 16px;
+      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
       box-shadow: inset 0 2px 4px rgba(255,255,255,0.6), 0 4px 10px rgba(0,0,0,0.05);
+      flex-shrink: 0;
     }
 
     .icon-box svg {
-      width: 36px;
-      height: 36px;
+      width: 30px;
+      height: 30px;
       fill: var(--primary-green);
     }
 
     .header h1 {
-      font-size: 26px;
+      font-size: 24px;
       font-weight: 700;
       color: var(--primary-green);
     }
 
     .section-title {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 700;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       color: #000;
     }
 
-    .screen {
+    .main-content {
+      flex: 1;
       display: flex;
       flex-direction: column;
-      height: 100%;
-      justify-content: space-between;
-      transition: opacity 0.3s ease;
-    }
-
-    .hidden {
-      display: none !important;
+      justify-content: flex-start;
+      gap: 20px;
+      position: relative;
+      overflow-y: auto;
+      padding-bottom: 10px;
     }
 
     /* Trajetos Recentes */
     .favorites-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 32px;
+      gap: 10px;
     }
 
     .fav-card {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       cursor: pointer;
     }
 
     .fav-icon {
-      width: 64px;
-      height: 64px;
+      width: 58px;
+      height: 58px;
       background: #d8ebd9;
-      border-radius: 18px;
+      border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
       box-shadow: 0 4px 10px rgba(0,0,0,0.03);
       border: 1px solid rgba(255,255,255,0.8);
+      transition: transform 0.15s ease;
+    }
+
+    .fav-card:active .fav-icon {
+      transform: scale(0.95);
     }
 
     .fav-icon svg {
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
       fill: #2d7a52;
     }
 
@@ -149,8 +175,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      margin-top: 8px;
+      gap: 10px;
     }
 
     .field-box {
@@ -162,13 +187,13 @@
 
     .field-box label {
       font-weight: 700;
-      font-size: 15px;
+      font-size: 14px;
     }
 
     .select-wrapper {
       position: relative;
       background: #fff;
-      border-radius: 20px;
+      border-radius: 18px;
       border: 1px solid #d0d7d1;
       padding: 12px 10px;
       box-shadow: var(--card-shadow);
@@ -187,16 +212,23 @@
     }
 
     .arrow-icon {
-      margin-top: 22px;
+      margin-top: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
     .arrow-icon svg {
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
       fill: var(--primary-green);
+    }
+
+    /* Botão Fixo */
+    .action-footer {
+      width: 100%;
+      padding-top: 10px;
+      z-index: 10;
     }
 
     .btn-main {
@@ -209,106 +241,191 @@
       font-size: 16px;
       font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 6px 16px rgba(45, 122, 82, 0.3);
-      transition: background 0.2s;
+      box-shadow: 0 6px 18px rgba(45, 122, 82, 0.35);
+      transition: background 0.2s, transform 0.15s ease;
       text-align: center;
-      margin-top: auto;
     }
 
-    .btn-main:hover {
+    .btn-main:active {
+      transform: scale(0.98);
       background: var(--primary-green-hover);
     }
 
-    /* Tela Resultado */
-    .result-card {
-      background: rgba(255, 255, 255, 0.9);
-      border-radius: var(--border-radius);
-      padding: 24px 16px;
-      box-shadow: var(--card-shadow);
-      border: 1px solid #e0e0e0;
+    /* =========================================================================
+       DYNAMIC ISLAND ANIMATED CARD
+       ========================================================================= */
+    .dynamic-island-container {
+      position: absolute;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%) scale(0.2);
+      width: 120px;
+      height: 36px;
+      background: var(--island-bg);
+      border-radius: 30px;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 100;
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+      color: var(--island-text);
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+
+    .dynamic-island-container.expanded {
+      top: 50%;
+      transform: translate(-50%, -55%) scale(1);
+      width: calc(100% - 32px);
+      height: auto;
+      min-height: 340px;
+      border-radius: 28px;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .island-content {
+      opacity: 0;
+      transition: opacity 0.3s ease 0.15s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       text-align: center;
-      margin-top: 20px;
+      height: 100%;
+      justify-content: space-between;
     }
 
-    .result-card .station-name {
-      font-size: 17px;
+    .dynamic-island-container.expanded .island-content {
+      opacity: 1;
+    }
+
+    .island-pill-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #a3d9a5;
+      margin-bottom: 12px;
+    }
+
+    .island-pill-header svg {
+      width: 18px;
+      height: 18px;
+      fill: #a3d9a5;
+    }
+
+    .island-station-name {
+      font-size: 16px;
       font-weight: 700;
-      margin-bottom: 20px;
+      color: #ffffff;
+      margin-bottom: 16px;
     }
 
-    .time-display {
+    .island-time-display {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
     }
 
-    .clock-icon {
-      width: 32px;
-      height: 32px;
-      border: 3px solid #666;
+    .island-clock-icon {
+      width: 28px;
+      height: 28px;
+      border: 2px solid #a3d9a5;
       border-radius: 50%;
-      display: inline-block;
       position: relative;
     }
 
-    .clock-icon::after {
+    .island-clock-icon::after {
       content: '';
       width: 2px;
-      height: 9px;
-      background: #666;
+      height: 8px;
+      background: #a3d9a5;
       position: absolute;
       top: 4px;
-      left: 12px;
+      left: 11px;
     }
 
-    .big-time {
-      font-size: 48px;
+    .island-big-time {
+      font-size: 52px;
       font-weight: 800;
       letter-spacing: -1px;
+      color: #ffffff;
+      line-height: 1;
     }
 
-    .time-subtext {
-      font-size: 14px;
-      color: #666;
+    .island-time-subtext {
+      font-size: 13px;
+      color: #a3d9a5;
       font-weight: 600;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
-    .direction-info {
+    .island-direction-info {
       font-size: 18px;
       font-weight: 800;
-      margin-bottom: 8px;
-      color: var(--primary-green);
+      color: #ffffff;
+      margin-bottom: 6px;
     }
 
-    .next-time-info {
-      font-size: 14px;
-      color: #444;
-      font-weight: 600;
+    .island-next-time-info {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 500;
+    }
+
+    .overlay-backdrop {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      z-index: 90;
+    }
+
+    .overlay-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
     }
   </style>
 </head>
 <body>
 
   <div class="app-container">
-    <!-- Header -->
-    <div class="header">
-      <div class="icon-box">
-        <svg viewBox="0 0 24 24"><path d="M12 2C8 2 4 2.5 4 6v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h12v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-4-4-8-4zm0 2c3.71 0 5.13.43 6 1H6c.87-.57 2.29-1 6-1zm6 7H6V7h12v4zm-10.5 6c-.83 0-1.5-.67-1.5-1.5S6.67 12 7.5 12s1.5.67 1.5 1.5S8.33 16 7.5 16zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+    <!-- Backdrop de Fundo para o efeito Ilha -->
+    <div id="backdrop" class="overlay-backdrop" onclick="closeIsland()"></div>
+
+    <!-- Header Principal -->
+    <div class="header-wrapper">
+      <div class="header">
+        <div class="icon-box">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8 2 4 2.5 4 6v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h12v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-4-4-8-4zm0 2c3.71 0 5.13.43 6 1H6c.87-.57 2.29-1 6-1zm6 7H6V7h12v4zm-10.5 6c-.83 0-1.5-.67-1.5-1.5S6.67 12 7.5 12s1.5.67 1.5 1.5S8.33 16 7.5 16zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+        </div>
+        <h1>VLT Horários</h1>
       </div>
-      <h1>VLT Horários</h1>
     </div>
 
-    <!-- TELA 1: Seleção de Estação -->
-    <div id="screen-search" class="screen">
+    <!-- Conteúdo Principal -->
+    <div class="main-content">
       <div>
         <div class="section-title">Trajetos recentes</div>
         <div class="favorites-grid" id="recents-container">
-          <!-- Preenchido dinamicamente via JS -->
+          <!-- Preenchido via JS -->
         </div>
+      </div>
 
+      <div>
         <div class="section-title">Estações</div>
         <div class="select-group">
           <div class="field-box">
@@ -334,36 +451,41 @@
           </div>
         </div>
       </div>
-
-      <button class="btn-main" onclick="calculateNextTrain()">Ver próximo horário</button>
     </div>
 
-    <!-- TELA 2: Exibição do Próximo Horário -->
-    <div id="screen-result" class="screen hidden">
-      <div>
-        <div class="section-title">Próximo Horário</div>
-        <div class="result-card">
-          <div class="station-name" id="result-station-name">Na Estação Parangaba (VLT)</div>
-          
-          <div class="time-display">
-            <div class="clock-icon"></div>
-            <span class="big-time" id="result-main-time">--:--</span>
-          </div>
-          <div class="time-subtext" id="result-subtext">Partida em -- min</div>
+    <!-- Botão Fixo -->
+    <div class="action-footer">
+      <button id="btn-action" class="btn-main" onclick="handleButtonClick()">Ver próximo horário</button>
+    </div>
 
-          <div class="direction-info" id="result-direction">Sentido IATE</div>
-          <div class="next-time-info" id="result-following-time">Seguinte: --:--</div>
+    <!-- Dynamic Island Result Modal -->
+    <div id="dynamic-island" class="dynamic-island-container">
+      <div class="island-content">
+        <div class="island-pill-header">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8 2 4 2.5 4 6v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h12v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-4-4-8-4zm0 2c3.71 0 5.13.43 6 1H6c.87-.57 2.29-1 6-1zm6 7H6V7h12v4zm-10.5 6c-.83 0-1.5-.67-1.5-1.5S6.67 12 7.5 12s1.5.67 1.5 1.5S8.33 16 7.5 16zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+          <span>PRÓXIMO COMBOIO</span>
+        </div>
+
+        <div class="island-station-name" id="island-station-name">Na Estação Parangaba</div>
+
+        <div>
+          <div class="island-time-display">
+            <div class="island-clock-icon"></div>
+            <span class="island-big-time" id="island-main-time">--:--</span>
+          </div>
+          <div class="island-time-subtext" id="island-subtext">Partida em -- min</div>
+        </div>
+
+        <div>
+          <div class="island-direction-info" id="island-direction">Sentido IATE</div>
+          <div class="island-next-time-info" id="island-following-time">Seguinte: --:--</div>
         </div>
       </div>
-
-      <button class="btn-main" onclick="showScreen('search')">Voltar</button>
     </div>
+
   </div>
 
   <script>
-    /* =========================================================================
-       DADOS OFICIAIS EXTRAÍDOS DO PDF METROFOR (VLT PARANGABA - MUCURIPE)
-       ========================================================================= */
     const stationsOrder = [
       "PARANGABA", "MONTESE", "EXPEDICIONARIOS", "VILA UNIÃO", "B. DE MELO",
       "S.J. DO TAUAPE", "PONTES VIEIRA", "ANTONIO SALES", "PAPICU", "MUCURIPE", "IATE"
@@ -396,18 +518,19 @@
       }
     };
 
-    /* SVG do VLT Padrão para os ícones */
     const vltIconSvg = `<svg viewBox="0 0 24 24"><path d="M12 2C8 2 4 2.5 4 6v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h12v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-4-4-8-4zm0 2c3.71 0 5.13.43 6 1H6c.87-.57 2.29-1 6-1zm6 7H6V7h12v4zm-10.5 6c-.83 0-1.5-.67-1.5-1.5S6.67 12 7.5 12s1.5.67 1.5 1.5S8.33 16 7.5 16zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>`;
 
-    // Trajetos padrão caso o histórico esteja vazio
     const defaultRecents = [
       { origin: "PARANGABA", dest: "PAPICU" },
       { origin: "PAPICU", dest: "IATE" },
       { origin: "IATE", dest: "PARANGABA" }
     ];
 
+    let isIslandOpen = false;
+
     const originSelect = document.getElementById('select-origin');
     const destSelect = document.getElementById('select-destination');
+    const btnAction = document.getElementById('btn-action');
 
     function populateSelects() {
       stationsOrder.forEach(station => {
@@ -423,7 +546,6 @@
       });
     }
 
-    /* Gerenciamento de Trajetos Recentes */
     function getRecents() {
       const stored = localStorage.getItem('vlt_recents');
       return stored ? JSON.parse(stored) : defaultRecents;
@@ -431,11 +553,8 @@
 
     function saveRecent(origin, dest) {
       let list = getRecents();
-      // Remove duplicados idênticos
       list = list.filter(item => !(item.origin === origin && item.dest === dest));
-      // Adiciona o novo no início
       list.unshift({ origin, dest });
-      // Mantém apenas os últimos 3
       if (list.length > 3) list = list.slice(0, 3);
       localStorage.setItem('vlt_recents', JSON.stringify(list));
       renderRecents();
@@ -460,16 +579,6 @@
       });
     }
 
-    function showScreen(screenType) {
-      if(screenType === 'result') {
-        document.getElementById('screen-search').classList.add('hidden');
-        document.getElementById('screen-result').classList.remove('hidden');
-      } else {
-        document.getElementById('screen-result').classList.add('hidden');
-        document.getElementById('screen-search').classList.remove('hidden');
-      }
-    }
-
     function quickSelect(origin, dest) {
       originSelect.value = origin;
       destSelect.value = dest;
@@ -481,8 +590,15 @@
       return new Date(brasiliaString);
     }
 
-    /* Cálculo e exibição */
-    function calculateNextTrain() {
+    function handleButtonClick() {
+      if (!isIslandOpen) {
+        calculateAndOpenIsland();
+      } else {
+        closeIsland();
+      }
+    }
+
+    function calculateAndOpenIsland() {
       const origin = originSelect.value;
       const destination = destSelect.value;
 
@@ -496,7 +612,6 @@
         return;
       }
 
-      // Salva nos trajetos recentes
       saveRecent(origin, destination);
 
       const originIdx = stationsOrder.indexOf(origin);
@@ -528,37 +643,44 @@
         }
       }
 
-      document.getElementById('result-station-name').textContent = `Na Estação ${origin} (VLT)`;
-      
-      // Removido os colchetes [] do sentido
-      document.getElementById('result-direction').textContent = `Sentido ${direction}`;
+      document.getElementById('island-station-name').textContent = `Na Estação ${origin}`;
+      document.getElementById('island-direction').textContent = `Sentido ${direction}`;
 
       if (nextTrainFormatted !== null) {
         const diffNext = nextTrainMin - currentMinutes;
-
-        document.getElementById('result-main-time').textContent = nextTrainFormatted;
+        document.getElementById('island-main-time').textContent = nextTrainFormatted;
 
         if (diffNext === 0) {
-          document.getElementById('result-subtext').textContent = "A passar agora na estação";
+          document.getElementById('island-subtext').textContent = "A passar agora na estação";
         } else {
-          document.getElementById('result-subtext').textContent = `Partida em ${diffNext} min`;
+          document.getElementById('island-subtext').textContent = `Partida em ${diffNext} min`;
         }
 
         if (followingTrainFormatted !== null) {
-          document.getElementById('result-following-time').textContent = `Seguinte: ${followingTrainFormatted}`;
+          document.getElementById('island-following-time').textContent = `Seguinte: ${followingTrainFormatted}`;
         } else {
-          document.getElementById('result-following-time').textContent = "Seguinte: Último comboio do dia";
+          document.getElementById('island-following-time').textContent = "Seguinte: Último comboio do dia";
         }
       } else {
-        document.getElementById('result-main-time').textContent = "--:--";
-        document.getElementById('result-subtext').textContent = "Fora do horário de funcionamento";
-        document.getElementById('result-following-time').textContent = "Operação encerrada por hoje";
+        document.getElementById('island-main-time').textContent = "--:--";
+        document.getElementById('island-subtext').textContent = "Fora de operação";
+        document.getElementById('island-following-time').textContent = "Operação encerrada por hoje";
       }
 
-      showScreen('result');
+      // Animar Ilha Dinâmica
+      document.getElementById('dynamic-island').classList.add('expanded');
+      document.getElementById('backdrop').classList.add('active');
+      btnAction.textContent = "Voltar";
+      isIslandOpen = true;
     }
 
-    // Inicialização
+    function closeIsland() {
+      document.getElementById('dynamic-island').classList.remove('expanded');
+      document.getElementById('backdrop').classList.remove('active');
+      btnAction.textContent = "Ver próximo horário";
+      isIslandOpen = false;
+    }
+
     populateSelects();
     renderRecents();
   </script>
