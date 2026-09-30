@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Início - PWA</title>
+  
+  <!-- Vinculação do Manifesto PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#520038">
+
+  <style>
+    /* ----------------------------------------------------
+       1. CONFIGURAÇÕES GERAIS E RESET DE ESTILOS
+       ---------------------------------------------------- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #f5f5f7; /* Fundo cinza claro padrão do app */
+      color: #222222;
+      padding-bottom: 80px;      /* Espaço reservado para a barra inferior fixa */
+    }
+
+    /* ----------------------------------------------------
+       2. CABEÇALHO ROXO COM SAUDAÇÃO E DATA
+       ---------------------------------------------------- */
+    .header-bg {
+      background: linear-gradient(180deg, #520038 0%, #300021 100%); /* Gradiente roxo escuro */
+      color: #ffffff;
+      padding: 24px 20px 60px 20px; /* Padding inferior estendido para permitir a sobreposição do card */
+    }
+
+    .header-date {
+      font-size: 0.85rem;
+      opacity: 0.8;
+      margin-bottom: 8px;
+    }
+
+    .header-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+    }
+
+    /* ----------------------------------------------------
+       3. CARD DA DISCIPLINA (EM DESTAQUE SOBRE O TOPO)
+       ---------------------------------------------------- */
+    .course-card-container {
+      padding: 0 16px;
+      margin-top: -40px; /* Sobe o card para sobrepor o fundo roxo */
+      margin-bottom: 24px;
+    }
+
+    .course-card {
+      background-color: #f2e4ed; /* Fundo rosa claro do card */
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Tag de modalidade ("Presencial") */
+    .badge-tag {
+      align-self: flex-start;
+      background-color: #b5005b; /* Tag rosa/vinho escuro */
+      color: #ffffff;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    .course-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #111111;
+      line-height: 1.3;
+    }
+
+    /* Barra de progresso da disciplina */
+    .progress-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .progress-bar-bg {
+      flex: 1;
+      height: 6px;
+      background-color: #e0d0dc;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      width: 0%; /* Porcentagem de progresso */
+      height: 100%;
+      background-color: #80005d;
+    }
+
+    .progress-text {
+      font-size: 0.85rem;
+      color: #555555;
+      font-weight: 500;
+    }
+
+    /* Botão de acessar disciplina */
+    .btn-primary {
+      background-color: #80005d; /* Roxo do botão */
+      color: #ffffff;
+      text-align: center;
+      text-decoration: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: block;
+    }
+
+    /* ----------------------------------------------------
+       4. SEÇÃO "REQUISITOS DO CURSO"
+       ---------------------------------------------------- */
+    .requirements-section {
+      padding: 0 16px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #111111;
+      margin-bottom: 12px;
+    }
+
+    .info-icon {
+      color: #555;
+      cursor: pointer;
+    }
+
+    .requirements-list {
+      background-color: #ffffff;
+      border-radius: 16px;
+      padding: 8px 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .requirement-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .requirement-item:last-child {
+      border-bottom: none;
+    }
+
+    .requirement-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #222222;
+    }
+
+    /* Badges de status dos requisitos */
+    .status-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .status-badge.neutral {
+      background-color: #e8e8e8;
+      color: #555555;
+    }
+
+    .status-badge.success {
+      background-color: #c2f0c2; /* Fundo verde claro */
+      color: #1b631b;            /* Texto verde escuro */
+    }
+
+    /* ----------------------------------------------------
+       5. BARRA DE NAVEGAÇÃO INFERIOR
+       ---------------------------------------------------- */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background-color: #ffffff;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      border-top: 1px solid #e0e0e0;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+      z-index: 1000;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: #666666;
+      font-size: 11px;
+      flex: 1;
+    }
+
+    .nav-item svg {
+      margin-bottom: 3px;
+    }
+
+    /* Ícone com cápsula rosa em volta no item ativo */
+    .nav-item.active .icon-wrapper {
+      background-color: #f2e4ed;
+      padding: 4px 16px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-item.active {
+      color: #80005d;
+      font-weight: bold;
+    }
+
+    .nav-item.active svg {
+      stroke: #80005d;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ====================================================
+       BLOCO 1: CABEÇALHO COM SAUDAÇÃO E DATA
+       ==================================================== -->
+  <header class="header-bg">
+    <div class="header-date">Sábado, 22 de Agosto de 2026</div>
+    <h1 class="header-title">Boa noite, Heitor!</h1>
+  </header>
+
+  <!-- ====================================================
+       BLOCO 2: CARD DA DISCIPLINA EM DESTAQUE
+       ==================================================== -->
+  <main class="course-card-container">
+    <div class="course-card">
+      <span class="badge-tag">Presencial</span>
+      <h2 class="course-name">Gestão de Pessoas (RH)</h2>
+      
+      <!-- Barra de Progresso -->
+      <div class="progress-container">
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill"></div>
+        </div>
+        <span class="progress-text">10 %</span>
+      </div>
+
+      <a href="#disciplina" class="btn-primary">Acessar disciplina</a>
+    </div>
+  </main>
+
+  <!-- ====================================================
+       BLOCO 3: REQUISITOS DO CURSO (DISCIPLINAS, HORAS, DOCS)
+       ==================================================== -->
+  <section class="requirements-section">
+    <div class="section-header">
+      <span>Requisitos do curso</span>
+      <svg class="info-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+    </div>
+
+    <div class="requirements-list">
+      <!-- Item 1: Disciplinas -->
+      <div class="requirement-item">
+        <div class="requirement-info">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+          <span>Disciplinas</span>
+        </div>
+        <span class="status-badge neutral">27 de 28 concluídas</span>
+      </div>
+
+      <!-- Item 2: Horas AAC -->
+      <div class="requirement-item">
+        <div class="requirement-info">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span>Horas AAC</span>
+        </div>
+        <span class="status-badge success">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          190 de 80 cumpridas
+        </span>
+      </div>
+
+      <!-- Item 3: Documentos -->
+      <div class="requirement-item">
+        <div class="requirement-info">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+          <span>Documentos</span>
+        </div>
+        <span class="status-badge success">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          5 de 5 aprovados
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================
+       BLOCO 4: BARRA DE NAVEGAÇÃO INFERIOR
+       ==================================================== -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item active">
+      <div class="icon-wrapper">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+      </div>
+      <span>Início</span>
+    </a>
+    <a href="#financeiro" class="nav-item">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><line x1="8" y1="10" x2="8" y2="10.01"></line><line x1="12" y1="10" x2="12" y2="10.01"></line><line x1="16" y1="10" x2="16" y2="10.01"></line><line x1="8" y1="14" x2="8" y2="14.01"></line><line x1="12" y1="14" x2="12" y2="14.01"></line><line x1="8" y1="18" x2="8" y2="18.01"></line><line x1="12" y1="18" x2="12" y2="18.01"></line></svg>
+      <span>Financeiro</span>
+    </a>
+    <a href="#suporte" class="nav-item">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+      <span>Suporte</span>
+    </a>
+    <a href="menu.html" class="nav-item">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      <span>Menu</span>
+    </a>
+  </nav>
+
+  <!-- REGISTRO DO SERVICE WORKER (PWA) -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('Service Worker registrado!'))
+        .catch(err => console.error('Erro no Service Worker:', err));
+    }
+  </script>
+
+</body>
+</html>
