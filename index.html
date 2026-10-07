@@ -656,9 +656,9 @@
 
     <!-- Botão Fixo Principal e Rodapé com Link -->
     <div id="action-footer" class="action-footer">
-      <button class="btn-main" onclick="calculateAndOpenIsland()">Ver próximo horário</button>
+      <button type="button" class="btn-main" onclick="calculateAndOpenIsland()">Ver próximo horário</button>
       <footer class="credits-footer">
-        Criado por <a href="http://mariobruno.dev" target="_blank" rel="noopener noreferrer">Mario Bruno</a>
+        Criado por <a href="https://mariobruno.dev" target="_blank" rel="noopener noreferrer">Mario Bruno</a>
       </footer>
     </div>
 
@@ -684,9 +684,9 @@
           <div class="island-arrival-text" id="island-arrival-time">Chegada às --:-- em DESTINO</div>
         </div>
 
-        <div class="island-next-time-info" id="island-following-time">Seguinte: --:--</div>
+        <div class="island-next-time-info" id="island-following-time">Seguintes: --:--, --:--, --:--</div>
 
-        <button class="btn-island-back" onclick="closeIsland()">Voltar</button>
+        <button type="button" class="btn-island-back" onclick="closeIsland()">Voltar</button>
       </div>
     </div>
 
@@ -702,8 +702,8 @@
         </div>
       </div>
       <div class="pwa-actions">
-        <button class="btn-pwa-install" onclick="installPwa()">Instalar</button>
-        <button class="btn-pwa-close" onclick="dismissPwaBanner()">✕</button>
+        <button type="button" class="btn-pwa-install" onclick="installPwa()">Instalar</button>
+        <button type="button" class="btn-pwa-close" onclick="dismissPwaBanner()">✕</button>
       </div>
     </div>
 
@@ -752,7 +752,7 @@
         { "IATE": "07:26", "MUCURIPE": "07:29", "PAPICU": "07:33", "ANTONIO SALES": "07:37", "PONTES VIEIRA": "07:40", "S.J. DO TAUAPE": "07:45", "B. DE MELO": "07:49", "VILA UNIÃO": "07:53", "EXPEDICIONARIOS": "07:57", "MONTESE": "08:00", "PARANGABA": "08:03" },
         { "IATE": "08:06", "MUCURIPE": "08:09", "PAPICU": "08:13", "ANTONIO SALES": "08:17", "PONTES VIEIRA": "08:20", "S.J. DO TAUAPE": "08:25", "B. DE MELO": "08:29", "VILA UNIÃO": "08:33", "EXPEDICIONARIOS": "08:37", "MONTESE": "08:40", "PARANGABA": "08:43" },
         { "IATE": "08:47", "MUCURIPE": "08:50", "PAPICU": "08:54", "ANTONIO SALES": "08:58", "PONTES VIEIRA": "09:01", "S.J. DO TAUAPE": "09:06", "B. DE MELO": "09:10", "VILA UNIÃO": "09:14", "EXPEDICIONARIOS": "09:18", "MONTESE": "09:21", "PARANGABA": "09:24" },
-        { "IATE": "09:28", "MUCURIPE": "09:31", "PAPICU": "09:35", "ANTONIO SALES": "09:39", "PONTES VIEIRA": "09:42", "S.J. DO TAUAPE": "09:47", "B. DE MELO": "09:51", "VILA UNIÃO": "09:55", "EXPEDICIONARIOS": "09:99", "MONTESE": "10:02", "PARANGABA": "10:05" },
+        { "IATE": "09:28", "MUCURIPE": "09:31", "PAPICU": "09:35", "ANTONIO SALES": "09:39", "PONTES VIEIRA": "09:42", "S.J. DO TAUAPE": "09:47", "B. DE MELO": "09:51", "VILA UNIÃO": "09:55", "EXPEDICIONARIOS": "09:58", "MONTESE": "10:02", "PARANGABA": "10:05" },
         { "IATE": "10:09", "MUCURIPE": "10:12", "PAPICU": "10:16", "ANTONIO SALES": "10:20", "PONTES VIEIRA": "10:23", "S.J. DO TAUAPE": "10:28", "B. DE MELO": "10:32", "VILA UNIÃO": "10:36", "EXPEDICIONARIOS": "10:39", "MONTESE": "10:42", "PARANGABA": "10:45" },
         { "IATE": "10:50", "MUCURIPE": "10:53", "PAPICU": "10:57", "ANTONIO SALES": "11:01", "PONTES VIEIRA": "11:04", "S.J. DO TAUAPE": "11:09", "B. DE MELO": "11:13", "VILA UNIÃO": "11:17", "EXPEDICIONARIOS": "11:20", "MONTESE": "11:23", "PARANGABA": "11:26" },
         { "IATE": "11:30", "MUCURIPE": "11:33", "PAPICU": "11:37", "ANTONIO SALES": "11:41", "PONTES VIEIRA": "11:44", "S.J. DO TAUAPE": "11:49", "B. DE MELO": "11:53", "VILA UNIÃO": "11:57", "EXPEDICIONARIOS": "12:00", "MONTESE": "12:03", "PARANGABA": "12:06" },
@@ -785,6 +785,7 @@
       { origin: "IATE", dest: "PARANGABA" }
     ];
 
+    // Elementos principais da interface
     const originSelect = document.getElementById('select-origin');
     const destSelect = document.getElementById('select-destination');
     const actionFooter = document.getElementById('action-footer');
@@ -805,7 +806,16 @@
 
     function getRecents() {
       const stored = localStorage.getItem('vlt_recents');
-      return stored ? JSON.parse(stored) : defaultRecents;
+
+      if (!stored) return defaultRecents;
+
+      try {
+        const recents = JSON.parse(stored);
+        return Array.isArray(recents) ? recents : defaultRecents;
+      } catch (error) {
+        console.warn('Não foi possível carregar os trajetos recentes:', error);
+        return defaultRecents;
+      }
     }
 
     function saveRecent(origin, dest) {
@@ -841,10 +851,13 @@
       destSelect.value = dest;
     }
 
-    function getBrasiliaDate() {
+    function getFortalezaDate() {
       const now = new Date();
-      const brasiliaString = now.toLocaleString("en-US", {timeZone: "America/Fortaleza"});
-      return new Date(brasiliaString);
+      const fortalezaString = now.toLocaleString('en-US', {
+        timeZone: 'America/Fortaleza'
+      });
+
+      return new Date(fortalezaString);
     }
 
     function calculateAndOpenIsland() {
@@ -869,13 +882,15 @@
       const direction = originIdx < destIdx ? "IATE" : "PARANGABA";
       const trips = fullSchedules[direction];
 
-      const now = getBrasiliaDate();
+      const now = getFortalezaDate();
       const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
       let nextTrainFormatted = null;
       let nextTrainMin = null;
       let arrivalTimeFormatted = null;
       let followingTrainFormatted = null;
+      let followingTrainFormatted2 = null;
+      let followingTrainFormatted3 = null;
 
       for (let i = 0; i < trips.length; i++) {
         const trip = trips[i];
@@ -891,9 +906,9 @@
           nextTrainMin = trainMinutes;
           arrivalTimeFormatted = trip[destination];
 
-          if (i + 1 < trips.length) {
-            followingTrainFormatted = trips[i + 1][origin];
-          }
+          followingTrainFormatted = trips[i + 1]?.[origin] ?? null;
+          followingTrainFormatted2 = trips[i + 2]?.[origin] ?? null;
+          followingTrainFormatted3 = trips[i + 3]?.[origin] ?? null;
           break;
         }
       }
@@ -914,7 +929,7 @@
         document.getElementById('island-arrival-time').textContent = `Chegada às ${arrivalTimeFormatted} em ${destination}`;
 
         if (followingTrainFormatted) {
-          document.getElementById('island-following-time').textContent = `Seguinte: ${followingTrainFormatted}`;
+          document.getElementById('island-following-time').textContent = `Seguintes: ${followingTrainFormatted}, ${followingTrainFormatted2}, ${followingTrainFormatted3}`;
         } else {
           document.getElementById('island-following-time').textContent = "Seguinte: Último comboio do dia";
         }
@@ -936,6 +951,7 @@
       actionFooter.classList.remove('hidden');
     }
 
+    // Inicialização
     populateSelects();
     renderRecents();
   </script>
